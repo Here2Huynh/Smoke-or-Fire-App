@@ -1,14 +1,26 @@
 <script>
-	import Navbar from '../components/Navbar.svelte';
+	import { onMount } from 'svelte';
+
+	import Footer from '../components/Footer.svelte';
+
+	let dark = true;
+
+	const toggleMode = () => {
+		window.document.body.classList.toggle('bg-zinc-700');
+	};
+
+	onMount(() => {
+		if (dark) toggleMode();
+	});
 </script>
 
 <svelte:head>
 	<title>Smoke or Fire App</title>
 </svelte:head>
 
-<div>
-	<Navbar />
+<div class:dark>
 	<slot />
+	<Footer bind:dark on:toggle-mode={toggleMode} />
 </div>
 
 <style>
