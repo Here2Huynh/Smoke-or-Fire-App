@@ -22,7 +22,7 @@
 	<title>Smoke or Fire App</title>
 </svelte:head>
 
-<div class:dark class="font-mono ">
+<div class:dark class="font-sans">
 	<Header />
 	<slot />
 	<Footer bind:dark on:toggle-mode={toggleMode} />

@@ -48,6 +48,7 @@
 		</button>
 
 		<button
+			on:click={() => goto('/setup')}
 			type="button"
 			class="inline-flex items-center py-2 px-4 text-sm font-medium 
                 text-gray-900 bg-transparent rounded-r-md border border-gray-900 

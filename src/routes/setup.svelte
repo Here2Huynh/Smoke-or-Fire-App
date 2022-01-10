@@ -1,0 +1,74 @@
+<script>
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+
+	let playerCount;
+
+	const playerNumberOptions = [...Array(11).keys()].slice(3, 11);
+
+	let players = [];
+
+	const addPlayers = (numberToAdd) => {
+		players = [];
+		for (let i = 0; i < numberToAdd; i++) {
+			players.push({
+				name: `player ${i + 1}`,
+				cards: []
+			});
+		}
+	};
+
+	const updatePlayers = () => {
+		console.log(playerCount);
+		console.log(players.length);
+
+		if (playerCount != players.length) {
+			addPlayers(playerCount);
+		}
+	};
+
+	onMount(() => {
+		if (playerCount) addPlayers(playerCount);
+	});
+</script>
+
+<div class="flex justify-center mt-8">
+	<form class="flex flex-col">
+		<label for="game-options" class="text-gray-900 dark:text-white overline text-2xl"
+			>New Game Setup</label
+		>
+
+		<label for="player-count" class="text-gray-900 dark:text-white mt-4">Number of players: </label>
+		<select
+			class="text-gray-900 border-2 border-gray-300"
+			bind:value={playerCount}
+			on:change={(v) => updatePlayers(v)}
+		>
+			{#each playerNumberOptions as option, idx (idx)}
+				<option value={option}>{option}</option>
+			{/each}
+		</select>
+
+		<label for="player-names" class="text-gray-900 dark:text-white mt-4">Player Names: </label>
+		{#each players as player, idx (idx)}
+			<input
+				placeholder={player.name}
+				bind:value={player.name}
+				class="m-2 border-2 border-gray-300"
+			/>
+		{/each}
+
+		<div class="mt-4">
+			<button
+				on:click={() => goto('/game')}
+				type="button"
+				class="text-white bg-amber-600 hover:bg-amber-500
+                focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
+                text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-400 
+                dark:hover:bg-amber-700 dark:focus:ring-amber-900"
+			>
+				Start Game</button
+			>
+		</div>
+	</form>
+</div>
