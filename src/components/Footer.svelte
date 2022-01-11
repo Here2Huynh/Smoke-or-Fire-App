@@ -1,8 +1,4 @@
 <script>
-	// TODO: add rules page
-	// TODO: add set up page, form with all options and such
-	// TODO: research card api => https://deckofcardsapi.com/
-
 	// NOTE: SVGs powered by heroicons.dev
 
 	import { goto } from '$app/navigation';

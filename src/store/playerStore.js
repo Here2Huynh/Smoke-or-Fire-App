@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
 
-const players = writable([]);
+const Players = writable([]);
 
-export default players;
+export default Players;

@@ -1,6 +1,4 @@
 <script context="module">
-	// TODO: add deck api and sync with store
-
 	// TODO: add game page, set up logic, deal players hand
 
 	/** @type {import('@sveltejs/kit').Load} */
@@ -27,7 +25,10 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	import PlayerStore from '../store/playerStore.js';
+	import PlayerStore from '../store/playerStore';
+	import DeckStore from '../store/deckStore';
+
+	import PlayerHand from '../components/PlayerHand.svelte';
 
 	import type { IAddToPile } from '../types/deck_api/addedToPile';
 	import type { ICardDrew } from '../types/deck_api/cardDrew';
@@ -37,22 +38,32 @@
 	export let deck: INewDeck;
 	const { deck_id } = deck;
 
+	const cardImgUrl = 'https://deckofcardsapi.com/static/img/5C.svg';
+
 	onMount(async () => {
+		DeckStore.update((currentDeck) => {
+			let copyDeck = currentDeck;
+
+			copyDeck = deck;
+
+			return copyDeck;
+		});
+
+		console.log('$DeckStore', $DeckStore);
+
 		if ($PlayerStore.length && deck_id) {
-			$PlayerStore.forEach(async (player: IPlayer) => {
-				const card = await drawCard(deck_id);
-				console.log('card', card);
-
-				const playerHand = await addToPile(
-					deck_id,
-					player.name,
-					card.cards.map((card) => card.code).join()
-				);
-				console.log('playerHand', playerHand.piles);
-
-				const pileCards = await listCardsInPile(deck_id, player.name);
-				console.log('pileCards', pileCards);
-			});
+			// $PlayerStore.forEach(async (player: IPlayer) => {
+			// 	const card = await drawCard(deck_id);
+			// 	console.log('card', card);
+			// 	const playerHand = await addToPile(
+			// 		deck_id,
+			// 		player.name,
+			// 		card.cards.map((card) => card.code).join()
+			// 	);
+			// 	console.log('playerHand', playerHand.piles);
+			// 	const pileCards = await listCardsInPile(deck_id, player.name);
+			// 	console.log('pileCards', pileCards);
+			// });
 		}
 	});
 
@@ -98,7 +109,11 @@
 </script>
 
 {#if $PlayerStore.length && deck}
-	<div>game body</div>
+	<div class="grid grid-rows-5 grid-cols-2 gap-4">
+		{#each $PlayerStore as player, idx (idx)}
+			<PlayerHand {player} />
+		{/each}
+	</div>
 {:else}
 	<div class="flex justify-center mt-60">
 		<button

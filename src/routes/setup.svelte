@@ -20,6 +20,8 @@
 
 	// TODO: add typescript types to this component
 
+	// TODO: add input validation, to reduce api errors
+
 	const updatePlayers = () => {
 		if (playerCount != players.length) addPlayers(playerCount);
 	};
