@@ -33,7 +33,7 @@
 			return copyPlayers;
 		});
 
-		goto('/game');
+		goto('/');
 	};
 
 	onMount(() => {
