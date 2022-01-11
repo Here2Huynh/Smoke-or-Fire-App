@@ -13,8 +13,6 @@
 
 	onMount(() => {
 		window.document.body.classList.toggle('bg-zinc-700', dark);
-		// if (dark) toggleMode();
-		// else
 	});
 </script>
 

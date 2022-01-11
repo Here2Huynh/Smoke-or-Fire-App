@@ -2,29 +2,38 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
+	import PlayerStore from '../store/playerStore';
+
 	let playerCount;
-
 	const playerNumberOptions = [...Array(11).keys()].slice(3, 11);
-
 	let players = [];
 
 	const addPlayers = (numberToAdd) => {
 		players = [];
 		for (let i = 0; i < numberToAdd; i++) {
 			players.push({
-				name: `player ${i + 1}`,
+				name: `player${i + 1}`,
 				cards: []
 			});
 		}
 	};
 
-	const updatePlayers = () => {
-		console.log(playerCount);
-		console.log(players.length);
+	// TODO: add typescript types to this component
 
-		if (playerCount != players.length) {
-			addPlayers(playerCount);
-		}
+	const updatePlayers = () => {
+		if (playerCount != players.length) addPlayers(playerCount);
+	};
+
+	const updateGameSetup = () => {
+		PlayerStore.update((currentPlayers) => {
+			let copyPlayers = [...currentPlayers];
+
+			copyPlayers = [...copyPlayers, ...players];
+
+			return copyPlayers;
+		});
+
+		goto('/game');
 	};
 
 	onMount(() => {
@@ -42,7 +51,7 @@
 		<select
 			class="text-gray-900 border-2 border-gray-300"
 			bind:value={playerCount}
-			on:change={(v) => updatePlayers(v)}
+			on:change={updatePlayers}
 		>
 			{#each playerNumberOptions as option, idx (idx)}
 				<option value={option}>{option}</option>
@@ -54,13 +63,13 @@
 			<input
 				placeholder={player.name}
 				bind:value={player.name}
-				class="m-2 border-2 border-gray-300"
+				class="m-1 border-2 border-gray-300"
 			/>
 		{/each}
 
 		<div class="mt-4">
 			<button
-				on:click={() => goto('/game')}
+				on:click={updateGameSetup}
 				type="button"
 				class="text-white bg-amber-600 hover:bg-amber-500
                 focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
