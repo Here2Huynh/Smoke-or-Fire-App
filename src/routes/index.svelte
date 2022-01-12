@@ -49,7 +49,7 @@
 			return copyDeck;
 		});
 
-		console.log('$DeckStore', $DeckStore);
+		// console.log('$DeckStore', $DeckStore);
 
 		// if ($PlayerStore.length && deck_id) {
 		// $PlayerStore.forEach(async (player: IPlayer) => {
@@ -105,7 +105,7 @@
 		}
 	};
 
-	console.log('deck', deck);
+	// console.log('deck', deck);
 </script>
 
 {#if $PlayerStore.length && deck}

@@ -1,25 +1,6 @@
 <script>
 	import PlayerStore from '../store/playerStore';
-
-	// export let player;
 </script>
-
-<!-- <div
-	class="inline p-6 max-w-sm bg-white rounded-lg border 
-	border-gray-200 shadow-md hover:bg-gray-100 
-	dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
->
-	<h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-		{player.name}
-	</h5>
-
-	<div class="w-4">
-		<img src="https://deckofcardsapi.com/static/img/AS.svg" />
-		<img src="https://deckofcardsapi.com/static/img/KS.svg" />
-		<img src="https://deckofcardsapi.com/static/img/QS.svg" />
-		<img src="https://deckofcardsapi.com/static/img/JS.svg" />
-	</div>
-</div> -->
 
 <div class="grid grid-rows-5 grid-cols-6 gap-16 auto-cols-max game-grid m-2">
 	{#each $PlayerStore as player, idx (idx)}
@@ -58,8 +39,4 @@
 	.game-grid {
 		max-height: 600px;
 	}
-	/* img {
-		width: 100px;
-		height: 200px;
-	} */
 </style>

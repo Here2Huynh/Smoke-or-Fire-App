@@ -23,31 +23,27 @@
 
 	// TODO: add input validation, to reduce api errors
 
-	// TODO: add existing game check and give optionality to user
-
 	const updatePlayers = () => {
 		if (playerCount != players.length) addPlayers(playerCount);
 	};
 
-	const updateGameSetup = () => {
-		if ($GameStore.started === false) {
-			PlayerStore.update((currentPlayers) => {
-				let copyPlayers = [...currentPlayers];
-
-				copyPlayers = [...copyPlayers, ...players];
-
-				return copyPlayers;
-			});
-
-			GameStore.update((currentGame) => {
-				let copyGame = { ...currentGame };
-				copyGame.started = true;
-
-				return copyGame;
-			});
-		}
-
+	const newGameSetup = () => {
 		goto('/');
+
+		PlayerStore.update((currentPlayers) => {
+			let copyPlayers = [...currentPlayers];
+
+			copyPlayers = [...players];
+
+			return copyPlayers;
+		});
+
+		GameStore.update((currentGame) => {
+			let copyGame = { ...currentGame };
+			copyGame.started = true;
+
+			return copyGame;
+		});
 	};
 
 	onMount(() => {
@@ -83,15 +79,30 @@
 
 		<div class="mt-4">
 			<button
-				on:click={updateGameSetup}
+				on:click={newGameSetup}
 				type="button"
 				class="text-white bg-amber-600 hover:bg-amber-500
                 focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
                 text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-400 
                 dark:hover:bg-amber-700 dark:focus:ring-amber-900"
 			>
-				Start Game</button
+				Start New Game</button
 			>
 		</div>
+
+		{#if $GameStore.started}
+			<div class="mt-4">
+				<button
+					on:click={() => goto('/')}
+					type="button"
+					class="text-white bg-amber-600 hover:bg-amber-500
+                focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
+                text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-400 
+                dark:hover:bg-amber-700 dark:focus:ring-amber-900"
+				>
+					Continue Game</button
+				>
+			</div>
+		{/if}
 	</form>
 </div>
