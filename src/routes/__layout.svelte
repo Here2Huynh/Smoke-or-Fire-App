@@ -14,6 +14,8 @@
 	onMount(() => {
 		window.document.body.classList.toggle('bg-zinc-700', dark);
 	});
+
+	// TODO: optimize layout to be mobile friendly
 </script>
 
 <svelte:head>
