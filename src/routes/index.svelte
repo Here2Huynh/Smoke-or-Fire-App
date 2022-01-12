@@ -25,8 +25,8 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
-	import PlayerStore from '../store/playerStore';
 	import DeckStore from '../store/deckStore';
+	import PlayerStore from '../store/playerStore';
 
 	import PlayerHand from '../components/PlayerHand.svelte';
 
@@ -51,20 +51,20 @@
 
 		console.log('$DeckStore', $DeckStore);
 
-		if ($PlayerStore.length && deck_id) {
-			// $PlayerStore.forEach(async (player: IPlayer) => {
-			// 	const card = await drawCard(deck_id);
-			// 	console.log('card', card);
-			// 	const playerHand = await addToPile(
-			// 		deck_id,
-			// 		player.name,
-			// 		card.cards.map((card) => card.code).join()
-			// 	);
-			// 	console.log('playerHand', playerHand.piles);
-			// 	const pileCards = await listCardsInPile(deck_id, player.name);
-			// 	console.log('pileCards', pileCards);
-			// });
-		}
+		// if ($PlayerStore.length && deck_id) {
+		// $PlayerStore.forEach(async (player: IPlayer) => {
+		// 	const card = await drawCard(deck_id);
+		// 	console.log('card', card);
+		// 	const playerHand = await addToPile(
+		// 		deck_id,
+		// 		player.name,
+		// 		card.cards.map((card) => card.code).join()
+		// 	);
+		// 	console.log('playerHand', playerHand.piles);
+		// 	const pileCards = await listCardsInPile(deck_id, player.name);
+		// 	console.log('pileCards', pileCards);
+		// });
+		// }
 	});
 
 	const drawCard = async (deck_id: string, cardCount: number = 1): Promise<ICardDrew> => {
@@ -109,11 +109,7 @@
 </script>
 
 {#if $PlayerStore.length && deck}
-	<div class="grid grid-rows-5 grid-cols-2 gap-4">
-		{#each $PlayerStore as player, idx (idx)}
-			<PlayerHand {player} />
-		{/each}
-	</div>
+	<PlayerHand />
 {:else}
 	<div class="flex justify-center mt-60">
 		<button

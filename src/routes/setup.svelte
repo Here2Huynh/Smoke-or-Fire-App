@@ -20,7 +20,10 @@
 	};
 
 	// TODO: add typescript types to this component
+
 	// TODO: add input validation, to reduce api errors
+
+	// TODO: add existing game check and give optionality to user
 
 	const updatePlayers = () => {
 		if (playerCount != players.length) addPlayers(playerCount);
@@ -52,7 +55,7 @@
 	});
 </script>
 
-<div class="flex justify-center mt-8">
+<div class="flex justify-center mt-12">
 	<form class="flex flex-col">
 		<label for="game-options" class="text-gray-900 dark:text-white overline text-2xl"
 			>New Game Setup</label

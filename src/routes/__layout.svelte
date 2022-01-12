@@ -6,9 +6,9 @@
 
 	let dark = true;
 
-	const toggleMode = () => {
-		window.document.body.classList.toggle('bg-zinc-700');
-		window.document.body.classList.toggle('bg-stone-100');
+	const toggleMode = (e) => {
+		const darkMode = e.detail;
+		window.document.body.classList.toggle('bg-zinc-700', darkMode);
 	};
 
 	onMount(() => {
