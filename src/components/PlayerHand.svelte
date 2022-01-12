@@ -29,7 +29,7 @@
 			{player.name}
 		</h5>
 		<div class="w-28 flex flex-row">
-			<img class="w-full h-full" src="https://deckofcardsapi.com/static/img/AS.svg" />
+			<img src="https://deckofcardsapi.com/static/img/AS.svg" alt="" width="100%" height="150%" />
 			<img src="https://deckofcardsapi.com/static/img/KS.svg" />
 			<img src="https://deckofcardsapi.com/static/img/QS.svg" />
 			<img src="https://deckofcardsapi.com/static/img/JS.svg" />

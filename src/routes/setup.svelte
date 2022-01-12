@@ -3,6 +3,7 @@
 	import { onMount } from 'svelte';
 
 	import PlayerStore from '../store/playerStore';
+	import GameStore from '../store/gameStore';
 
 	let playerCount;
 	const playerNumberOptions = [...Array(11).keys()].slice(3, 11);
@@ -19,7 +20,6 @@
 	};
 
 	// TODO: add typescript types to this component
-
 	// TODO: add input validation, to reduce api errors
 
 	const updatePlayers = () => {
@@ -27,13 +27,22 @@
 	};
 
 	const updateGameSetup = () => {
-		PlayerStore.update((currentPlayers) => {
-			let copyPlayers = [...currentPlayers];
+		if ($GameStore.started === false) {
+			PlayerStore.update((currentPlayers) => {
+				let copyPlayers = [...currentPlayers];
 
-			copyPlayers = [...copyPlayers, ...players];
+				copyPlayers = [...copyPlayers, ...players];
 
-			return copyPlayers;
-		});
+				return copyPlayers;
+			});
+
+			GameStore.update((currentGame) => {
+				let copyGame = { ...currentGame };
+				copyGame.started = true;
+
+				return copyGame;
+			});
+		}
 
 		goto('/');
 	};
