@@ -32,4 +32,8 @@
 	@tailwind base;
 	@tailwind components;
 	@tailwind utilities;
+
+	:global(body) {
+		background-color: #f2eee2;
+	}
 </style>

@@ -15,7 +15,7 @@
 	};
 </script>
 
-<nav class="flex justify-center absolute inset-x-0 bottom-0 m-4">
+<nav class="flex justify-center absolute inset-x-0 bottom-0 m-2">
 	<div class="inline-flex rounded-md shadow-sm" role="group">
 		<button
 			on:click={() => goto('/rules')}

@@ -2,7 +2,9 @@ import { writable } from 'svelte/store';
 
 const Game = writable({
 	started: false,
-	players: []
+	currentPlayer: null,
+	players: [],
+	round: 1
 });
 
 export default Game;

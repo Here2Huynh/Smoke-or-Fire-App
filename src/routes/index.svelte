@@ -28,12 +28,11 @@
 	import DeckStore from '../store/deckStore';
 	import PlayerStore from '../store/playerStore';
 
-	import PlayerHand from '../components/PlayerHand.svelte';
+	import GameUI from '../components/GameUI.svelte';
 
 	import type { IAddToPile } from '../types/deck_api/addedToPile';
 	import type { ICardDrew } from '../types/deck_api/cardDrew';
 	import type { INewDeck } from '../types/deck_api/newDeck';
-	import type { IPlayer } from '../types/player.js';
 
 	export let deck: INewDeck;
 	const { deck_id } = deck;
@@ -104,12 +103,10 @@
 			return await res.json();
 		}
 	};
-
-	// console.log('deck', deck);
 </script>
 
 {#if $PlayerStore.length && deck}
-	<PlayerHand />
+	<GameUI />
 {:else}
 	<div class="flex justify-center mt-60">
 		<button

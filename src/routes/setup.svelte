@@ -14,7 +14,8 @@
 		for (let i = 0; i < numberToAdd; i++) {
 			players.push({
 				name: `player${i + 1}`,
-				cards: []
+				cards: [],
+				idx: i
 			});
 		}
 	};
@@ -41,6 +42,7 @@
 		GameStore.update((currentGame) => {
 			let copyGame = { ...currentGame };
 			copyGame.started = true;
+			copyGame.currentPlayer = players[0];
 
 			return copyGame;
 		});
