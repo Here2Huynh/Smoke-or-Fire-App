@@ -31,21 +31,23 @@
 	const newGameSetup = () => {
 		goto('/');
 
-		PlayerStore.update((currentPlayers) => {
-			let copyPlayers = [...currentPlayers];
+		if ($GameStore.started == false) {
+			PlayerStore.update((currentPlayers) => {
+				let copyPlayers = [...currentPlayers];
 
-			copyPlayers = [...players];
+				copyPlayers = [...players];
 
-			return copyPlayers;
-		});
+				return copyPlayers;
+			});
 
-		GameStore.update((currentGame) => {
-			let copyGame = { ...currentGame };
-			copyGame.started = true;
-			copyGame.currentPlayer = players[0];
+			GameStore.update((currentGame) => {
+				let copyGame = { ...currentGame };
+				copyGame.started = true;
+				copyGame.currentPlayer = $PlayerStore[0];
 
-			return copyGame;
-		});
+				return copyGame;
+			});
+		}
 	};
 
 	onMount(() => {

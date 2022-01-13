@@ -3,10 +3,6 @@
 	import GameStore from '../store/gameStore';
 
 	import Prompt from '../components/Prompt.svelte';
-
-	$: {
-		console.log($GameStore.currentPlayer, $PlayerStore);
-	}
 </script>
 
 <div class="grid grid-rows-5 grid-cols-6 gap-16 auto-cols-max game-grid m-2">
