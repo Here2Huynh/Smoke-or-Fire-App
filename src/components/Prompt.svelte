@@ -1,40 +1,48 @@
-<script>
+<script lang="ts">
 	import GameStore from '../store/gameStore';
 	import RoundStore from '../store/roundStore';
 	import PlayerStore from '../store/playerStore';
 
 	let revealed = false;
-	let round = $GameStore.round;
+	// let round = $GameStore.round;
 	let option1;
 	let option2;
 	let option1Style;
 	let option2Style;
 
-	$: option1;
-	$: option2;
+	// const suits = [♠️, ♣️ ,♥️ , ♦️]
+	// ♠️
 
-	if (round != 4) {
-		const options = $RoundStore[round].question.split('/');
-		console.log('options', options);
-		option1 = options[0];
-		option2 = options[1];
-	}
+	// TODO: make the options reactive
 
-	switch (option1) {
-		case 'Smoke':
-			option1Style = 'slate';
-			break;
-	}
+	// if (round != 4) {
+	// 	const options = $RoundStore[round].question.split('/');
+	// 	console.log('options', options);
+	// 	option1 = options[0];
+	// 	option2 = options[1];
+	// }
 
-	switch (option2) {
-		case 'Fire':
-			option2Style = 'amber';
-			break;
-	}
+	const assignOptionStyle = (option: string) => {
+		let color;
+		switch (option) {
+			case 'Smoke':
+				color = 'slate';
+				break;
+			case 'Fire':
+				color = 'amber';
+				break;
+		}
+
+		return `text-white bg-${color}-400 hover:bg-${color}-500 focus:ring-4 
+                focus:ring-${color}-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
+                mr-2 mb-2`;
+	};
 
 	const handleOptionSelection = () => {
 		console.log('$GameStore', $GameStore);
+
 		console.log('$GameStore.currentPlayer', $GameStore.currentPlayer);
+		console.log('$GameStore.round', $GameStore.round);
 		console.log('$PlayerStore', $PlayerStore);
 
 		// move to next player
@@ -76,16 +84,13 @@
 	</div>
 
 	<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
-		<button
-			type="button"
-			on:click={handleOptionSelection}
-			class={`text-white bg-${option1Style}-400 hover:bg-${option1Style}-500 focus:ring-4 
-            focus:ring-${option1Style}-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
-            mr-2 mb-2`}
-		>
-			{option1}
-		</button>
-		<span class="m-2">or</span>
+		{#each $RoundStore[$GameStore.round].options as option, idx (idx)}
+			<button type="button" on:click={handleOptionSelection} class={assignOptionStyle(option)}>
+				{option}
+			</button>
+		{/each}
+
+		<!-- <span class="m-2">or</span>
 		<button
 			type="button"
 			on:click={handleOptionSelection}
@@ -94,7 +99,7 @@
             mr-2 mb-2`}
 		>
 			{option2}
-		</button>
+		</button> -->
 	</div>
 </div>
 

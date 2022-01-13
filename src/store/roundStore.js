@@ -2,16 +2,16 @@ import { writable } from 'svelte/store';
 
 const Rounds = writable({
 	1: {
-		question: 'Smoke/Fire'
+		options: ['Smoke', 'Fire']
 	},
 	2: {
-		question: 'High/Low'
+		options: ['High', 'Low']
 	},
 	3: {
-		question: 'In/Out'
+		options: ['In', 'Out']
 	},
 	4: {
-		question: 'Suit'
+		options: ['♠️', '♣️', '♥️', '♦️']
 	}
 });
 
