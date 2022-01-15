@@ -29,25 +29,27 @@
 	};
 
 	const newGameSetup = () => {
+		addPlayers(playerCount);
+		// if ($GameStore.started == false) {
+		PlayerStore.update((currentPlayers) => {
+			let copyPlayers = [...currentPlayers];
+
+			copyPlayers = [...players];
+
+			return copyPlayers;
+		});
+
+		GameStore.update((currentGame) => {
+			let copyGame = { ...currentGame };
+			copyGame.started = true;
+			copyGame.currentPlayer = $PlayerStore[0];
+			copyGame.round = 1;
+
+			return copyGame;
+		});
+		// }
+
 		goto('/');
-
-		if ($GameStore.started == false) {
-			PlayerStore.update((currentPlayers) => {
-				let copyPlayers = [...currentPlayers];
-
-				copyPlayers = [...players];
-
-				return copyPlayers;
-			});
-
-			GameStore.update((currentGame) => {
-				let copyGame = { ...currentGame };
-				copyGame.started = true;
-				copyGame.currentPlayer = $PlayerStore[0];
-
-				return copyGame;
-			});
-		}
 	};
 
 	onMount(() => {

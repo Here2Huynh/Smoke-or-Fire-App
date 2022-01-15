@@ -27,8 +27,9 @@
 				give away, and an incorrect guess earns you 1.
 			</li>
 			<li class="p-2">
-				2. Each player guesses their next card will be either higher than, lower than, or the same
-				(post) as their first card. Correct guess earns 2 to give or 2 to take.
+				2. Each player guesses their next card will be either higher than or lower than as their
+				first card. If it is the same value, then it counts lower. Correct guess earns 2 to give or
+				2 to take.
 			</li>
 			<li class="p-2">
 				3. Each player guesses their next card will be either outside of their current cards,

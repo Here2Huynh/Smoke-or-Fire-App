@@ -1,4 +1,6 @@
 <script>
+	import { fly } from 'svelte/transition';
+
 	import PlayerStore from '../store/playerStore';
 	import GameStore from '../store/gameStore';
 
@@ -26,18 +28,11 @@
 			</h5>
 
 			<div class="col-start-3 col-span-2 grid grid-cols-4 w-24">
-				<div class="w-16 h-16">
-					<img src="https://deckofcardsapi.com/static/img/AS.png" alt="" />
-				</div>
-				<div class="w-16 h-16">
-					<img src="https://deckofcardsapi.com/static/img/AS.png" alt="" />
-				</div>
-				<div class="w-16 h-16">
-					<img src="https://deckofcardsapi.com/static/img/AS.png" alt="" />
-				</div>
-				<div class="w-16 h-16">
-					<img src="https://deckofcardsapi.com/static/img/AS.png" alt="" />
-				</div>
+				{#each player.cards as card, idx (idx)}
+					<div in:fly={{ x: 200, duration: 1000 }} class="w-16 h-16">
+						<img src={card.image} alt={card.value} />
+					</div>
+				{/each}
 			</div>
 		</div>
 	{/each}
@@ -47,6 +42,18 @@
 	</div>
 </div>
 
+<!-- <div class="w-16 h-16">
+					<img src="https://deckofcardsapi.com/static/img/AS.png" alt="" />
+				</div>
+				<div class="w-16 h-16">
+					<img src="https://deckofcardsapi.com/static/img/AS.png" alt="" />
+				</div>
+				<div class="w-16 h-16">
+					<img src="https://deckofcardsapi.com/static/img/AS.png" alt="" />
+				</div>
+				<div class="w-16 h-16">
+					<img src="https://deckofcardsapi.com/static/img/AS.png" alt="" />
+				</div> -->
 <style>
 	.game-grid {
 		max-height: 600px;

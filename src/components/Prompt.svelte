@@ -13,6 +13,22 @@
 	let correctness = null;
 	let checkMsg = '';
 
+	const cardMap = {
+		A: 1,
+		2: 2,
+		3: 3,
+		4: 4,
+		5: 5,
+		6: 6,
+		7: 7,
+		8: 8,
+		9: 9,
+		0: 10,
+		J: 11,
+		Q: 12,
+		K: 13
+	};
+
 	// TODO: add reveal logic
 
 	$: {
@@ -107,6 +123,27 @@
 		}
 	};
 
+	const checkRound2 = (option) => {
+		const firstCard = $GameStore.currentPlayer.cards[0];
+		const secondCard = $GameStore.currentPlayer.cards[1];
+
+		const first = firstCard.code.split('');
+		const second = secondCard.code.split('');
+
+		if (
+			(option === 'Low' && cardMap[first[0]] >= cardMap[second[0]]) ||
+			(option === 'High' && cardMap[first[0]] < cardMap[second[0]])
+		) {
+			const verb = $RoundStore[$GameStore.round].punishment.right;
+			const amount = $RoundStore[$GameStore.round].punishment.amount;
+			checkMsg = `Correct! ${verb} ${amount}`;
+		} else {
+			const verb = $RoundStore[$GameStore.round].punishment.wrong;
+			const amount = $RoundStore[$GameStore.round].punishment.amount;
+			checkMsg = `Wrong! ${verb} ${amount}`;
+		}
+	};
+
 	const nextPlayer = () => {
 		// move to next player
 		GameStore.update((currentGame) => {
@@ -148,6 +185,16 @@
 			);
 			foundPlayer.cards = [...foundPlayer.cards, ...drawnCard.cards];
 
+			GameStore.update((currentGame) => {
+				let copyGame = { ...currentGame };
+
+				if (copyGame.currentPlayer.name === foundPlayer.name) {
+					copyGame.currentPlayer.cards = foundPlayer.cards;
+				}
+
+				return copyGame;
+			});
+
 			return copyPlayers;
 		});
 
@@ -155,6 +202,9 @@
 		switch ($GameStore.round) {
 			case 1:
 				checkRound1(option);
+				break;
+			case 2:
+				checkRound2(option);
 				break;
 		}
 	};
@@ -171,15 +221,17 @@
 		</h1>
 	</div>
 
-	<div class="ml-auto mr-auto w-32 h-32">
-		{#if revealed}
+	{#if revealed}
+		<div class="ml-auto mr-auto w-32 h-32">
 			<!-- <img src="https://deckofcardsapi.com/static/img/AS.png" alt="" /> -->
 
 			<img src={drawnCard.cards[0].image} alt={drawnCard.cards[0].value} />
-		{:else}
+		</div>
+	{:else}
+		<div class="ml-auto mr-auto w-32 h-32">
 			<img src="../src/shared/assets/card.png" alt="" />
-		{/if}
-	</div>
+		</div>
+	{/if}
 
 	{#if !revealed}
 		<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
