@@ -2,7 +2,12 @@ import { writable } from 'svelte/store';
 
 const Rounds = writable({
 	1: {
-		options: ['Smoke', 'Fire']
+		options: ['Smoke', 'Fire'],
+		punishment: {
+			right: 'give',
+			wrong: 'take',
+			amount: 1
+		}
 	},
 	2: {
 		options: ['High', 'Low']

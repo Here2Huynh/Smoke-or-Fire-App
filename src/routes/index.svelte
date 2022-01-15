@@ -66,34 +66,6 @@
 		// }
 	});
 
-	const drawCard = async (deck_id: string, cardCount: number = 1): Promise<ICardDrew> => {
-		const url = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=${cardCount}`;
-		const res = await fetch(url);
-
-		if (res.ok) {
-			return await res.json();
-		}
-
-		// TODO: add error handling to these api calls
-		// return {
-		// 	status: res.status,
-		// 	error: new Error(`Could not load ${url}`)
-		// };
-	};
-
-	const addToPile = async (
-		deck_id: string,
-		pile_name: string,
-		cardsToAdd: string
-	): Promise<IAddToPile> => {
-		const url = `https://deckofcardsapi.com/api/deck/${deck_id}/pile/${pile_name}/add/?cards=${cardsToAdd}`;
-		const res = await fetch(url);
-
-		if (res.ok) {
-			return await res.json();
-		}
-	};
-
 	const listCardsInPile = async (deck_id: string, pile_name: string) => {
 		const url = `https://deckofcardsapi.com/api/deck/${deck_id}/pile/${pile_name}/list/`;
 
@@ -112,10 +84,10 @@
 		<button
 			on:click={() => goto('/setup')}
 			type="button"
-			class="text-white bg-amber-600 hover:bg-amber-500
+			class="text-white bg-amber-500 hover:bg-amber-400
         focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
-        text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-400 
-        dark:hover:bg-amber-700 dark:focus:ring-amber-900">Setup Game</button
+        text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-500 
+        dark:hover:bg-amber-400 dark:focus:ring-amber-600">Setup Game</button
 		>
 	</div>
 {/if}

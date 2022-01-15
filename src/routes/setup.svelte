@@ -85,10 +85,10 @@
 			<button
 				on:click={newGameSetup}
 				type="button"
-				class="text-white bg-amber-600 hover:bg-amber-500
+				class="text-white bg-amber-500 hover:bg-amber-400
                 focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
-                text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-400 
-                dark:hover:bg-amber-700 dark:focus:ring-amber-900"
+                text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-500 
+                dark:hover:bg-amber-400 dark:focus:ring-amber-600"
 			>
 				Start New Game</button
 			>
@@ -99,10 +99,10 @@
 				<button
 					on:click={() => goto('/')}
 					type="button"
-					class="text-white bg-amber-600 hover:bg-amber-500
+					class="text-white bg-amber-500 hover:bg-amber-400
                 focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
-                text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-400 
-                dark:hover:bg-amber-700 dark:focus:ring-amber-900"
+                text-sm px-5 py-2.5 text-center mb-2 dark:bg-fuchsia-500 
+                dark:hover:bg-fuchsia-400 dark:focus:ring-fuchsia-600"
 				>
 					Continue Game</button
 				>
