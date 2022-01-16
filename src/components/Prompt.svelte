@@ -10,8 +10,8 @@
 
 	let revealed = false;
 	let drawnCard: ICardDrew;
-	let correctness = null;
 	let checkMsg = '';
+	let correctness = null;
 
 	const cardMap = {
 		A: 1,
@@ -26,14 +26,12 @@
 		0: 10,
 		J: 11,
 		Q: 12,
-		K: 13
+		K: 13,
+		ACE: 1,
+		JACK: 11,
+		QUEEN: 12,
+		KING: 13
 	};
-
-	// TODO: add reveal logic
-
-	$: {
-		console.log('revealed', revealed);
-	}
 
 	const assignOptionStyle = (option: string) => {
 		let color;
@@ -90,6 +88,7 @@
 		// };
 	};
 
+	// TODO: sync store and api
 	const addToPile = async (
 		deck_id: string,
 		pile_name: string,
@@ -112,6 +111,7 @@
 			(option == 'Fire' && fireCards.includes(drawnCard.cards[0].suit))
 		) {
 			correctness = true;
+			// TODO: add color styling to correctness for better UX
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
 			checkMsg = `Correct! ${verb} ${amount}`;
@@ -133,6 +133,35 @@
 		if (
 			(option === 'Low' && cardMap[first[0]] >= cardMap[second[0]]) ||
 			(option === 'High' && cardMap[first[0]] < cardMap[second[0]])
+		) {
+			const verb = $RoundStore[$GameStore.round].punishment.right;
+			const amount = $RoundStore[$GameStore.round].punishment.amount;
+			checkMsg = `Correct! ${verb} ${amount}`;
+		} else {
+			const verb = $RoundStore[$GameStore.round].punishment.wrong;
+			const amount = $RoundStore[$GameStore.round].punishment.amount;
+			checkMsg = `Wrong! ${verb} ${amount}`;
+		}
+	};
+
+	const checkRound3 = (option) => {
+		const firstCard = $GameStore.currentPlayer.cards[0];
+		const secondCard = $GameStore.currentPlayer.cards[1];
+
+		const first = firstCard.code.split('');
+		const second = secondCard.code.split('');
+
+		const isWithin = (rangeStart, rangeEnd, value) => {
+			return (
+				(rangeStart <= value && value <= rangeEnd) || (rangeStart >= value && value >= rangeEnd)
+			);
+		};
+
+		if (
+			(option === 'In' &&
+				isWithin(cardMap[first[0]], cardMap[second[0]], cardMap[drawnCard.cards[0].value])) ||
+			(option === 'Out' &&
+				!isWithin(cardMap[first[0]], cardMap[second[0]], cardMap[drawnCard.cards[0].value]))
 		) {
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
@@ -205,6 +234,9 @@
 				break;
 			case 2:
 				checkRound2(option);
+				break;
+			case 3:
+				checkRound3(option);
 				break;
 		}
 	};

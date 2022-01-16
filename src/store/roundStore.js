@@ -18,7 +18,12 @@ const Rounds = writable({
 		}
 	},
 	3: {
-		options: ['In', 'Out']
+		options: ['In', 'Out'],
+		punishment: {
+			right: 'give',
+			wrong: 'take',
+			amount: 3
+		}
 	},
 	4: {
 		options: ['♠️', '♣️', '♥️', '♦️']
