@@ -112,15 +112,14 @@
 			(option == 'Fire' && fireCards.includes(drawnCard.cards[0].suit))
 		) {
 			correctness = true;
-			// TODO: add color styling to correctness for better UX
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
-			checkMsg = `Correct! ${verb} ${amount}`;
+			checkMsg = ` ${verb} ${amount}`;
 		} else {
 			correctness = false;
 			const verb = $RoundStore[$GameStore.round].punishment.wrong;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
-			checkMsg = `Wrong! ${verb} ${amount}`;
+			checkMsg = ` ${verb} ${amount}`;
 		}
 	};
 
@@ -135,13 +134,15 @@
 			(option === 'Low' && cardMap[first[0]] >= cardMap[second[0]]) ||
 			(option === 'High' && cardMap[first[0]] < cardMap[second[0]])
 		) {
+			correctness = true;
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
-			checkMsg = `Correct! ${verb} ${amount}`;
+			checkMsg = ` ${verb} ${amount}`;
 		} else {
+			correctness = false;
 			const verb = $RoundStore[$GameStore.round].punishment.wrong;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
-			checkMsg = `Wrong! ${verb} ${amount}`;
+			checkMsg = ` ${verb} ${amount}`;
 		}
 	};
 
@@ -164,13 +165,15 @@
 			(option === 'Out' &&
 				!isWithin(cardMap[first[0]], cardMap[second[0]], cardMap[drawnCard.cards[0].value]))
 		) {
+			correctness = true;
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
-			checkMsg = `Correct! ${verb} ${amount}`;
+			checkMsg = ` ${verb} ${amount}`;
 		} else {
+			correctness = false;
 			const verb = $RoundStore[$GameStore.round].punishment.wrong;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
-			checkMsg = `Wrong! ${verb} ${amount}`;
+			checkMsg = ` ${verb} ${amount}`;
 		}
 	};
 
@@ -183,13 +186,15 @@
 			(option == '♥️' && drawnCard.cards[0].suit == 'HEARTS') ||
 			(option == '♦️' && drawnCard.cards[0].suit == 'DIAMONDS')
 		) {
+			correctness = true;
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
-			checkMsg = `Correct! ${verb} ${amount}`;
+			checkMsg = ` ${verb} ${amount}`;
 		} else {
+			correctness = false;
 			const verb = $RoundStore[$GameStore.round].punishment.wrong;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
-			checkMsg = `Wrong! ${verb} ${amount}`;
+			checkMsg = ` ${verb} ${amount}`;
 		}
 	};
 
@@ -320,7 +325,11 @@
 
 	{#if revealed}
 		<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
-			<h1>{checkMsg}</h1>
+			{#if correctness}
+				<h1><span class="text-green-500">Correct!</span>{checkMsg}</h1>
+			{:else}
+				<h1><span class="text-rose-500">Wrong!</span>{checkMsg}</h1>
+			{/if}
 		</div>
 	{/if}
 </div>
