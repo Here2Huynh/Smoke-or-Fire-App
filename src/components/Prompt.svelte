@@ -3,6 +3,7 @@
 	import RoundStore from '../store/roundStore';
 	import PlayerStore from '../store/playerStore';
 	import DeckStore from '../store/deckStore';
+	import CardValueStore from '../store/cardValueStore';
 
 	import type { IAddToPile } from '../types/deck_api/addedToPile';
 	import type { ICardDrew } from '../types/deck_api/cardDrew';
@@ -12,27 +13,6 @@
 	let drawnCard: ICardDrew;
 	let checkMsg = '';
 	let correctness = null;
-
-	// TODO: convert this to a store
-	const cardMap = {
-		A: 1,
-		2: 2,
-		3: 3,
-		4: 4,
-		5: 5,
-		6: 6,
-		7: 7,
-		8: 8,
-		9: 9,
-		0: 10,
-		J: 11,
-		Q: 12,
-		K: 13,
-		ACE: 1,
-		JACK: 11,
-		QUEEN: 12,
-		KING: 13
-	};
 
 	const assignOptionStyle = (option: string) => {
 		let color;
@@ -103,7 +83,7 @@
 		}
 	};
 
-	const checkRound1 = (option) => {
+	const checkRound1 = (option: string) => {
 		const smokeCards = ['CLUBS', 'SPADES'];
 		const fireCards = ['HEARTS', 'DIAMONDS'];
 
@@ -123,7 +103,7 @@
 		}
 	};
 
-	const checkRound2 = (option) => {
+	const checkRound2 = (option: string) => {
 		const firstCard = $GameStore.currentPlayer.cards[0];
 		const secondCard = $GameStore.currentPlayer.cards[1];
 
@@ -131,8 +111,8 @@
 		const second = secondCard.code.split('');
 
 		if (
-			(option === 'Low' && cardMap[first[0]] >= cardMap[second[0]]) ||
-			(option === 'High' && cardMap[first[0]] < cardMap[second[0]])
+			(option === 'Low' && $CardValueStore[first[0]] >= $CardValueStore[second[0]]) ||
+			(option === 'High' && $CardValueStore[first[0]] < $CardValueStore[second[0]])
 		) {
 			correctness = true;
 			const verb = $RoundStore[$GameStore.round].punishment.right;
@@ -146,7 +126,7 @@
 		}
 	};
 
-	const checkRound3 = (option) => {
+	const checkRound3 = (option: string) => {
 		const firstCard = $GameStore.currentPlayer.cards[0];
 		const secondCard = $GameStore.currentPlayer.cards[1];
 
@@ -161,9 +141,17 @@
 
 		if (
 			(option === 'In' &&
-				isWithin(cardMap[first[0]], cardMap[second[0]], cardMap[drawnCard.cards[0].value])) ||
+				isWithin(
+					$CardValueStore[first[0]],
+					$CardValueStore[second[0]],
+					$CardValueStore[drawnCard.cards[0].value]
+				)) ||
 			(option === 'Out' &&
-				!isWithin(cardMap[first[0]], cardMap[second[0]], cardMap[drawnCard.cards[0].value]))
+				!isWithin(
+					$CardValueStore[first[0]],
+					$CardValueStore[second[0]],
+					$CardValueStore[drawnCard.cards[0].value]
+				))
 		) {
 			correctness = true;
 			const verb = $RoundStore[$GameStore.round].punishment.right;
@@ -177,7 +165,7 @@
 		}
 	};
 
-	const checkRound4 = (option) => {
+	const checkRound4 = (option: string) => {
 		console.log('option', option);
 
 		if (
