@@ -13,6 +13,7 @@
 	let checkMsg = '';
 	let correctness = null;
 
+	// TODO: convert this to a store
 	const cardMap = {
 		A: 1,
 		2: 2,
@@ -173,6 +174,25 @@
 		}
 	};
 
+	const checkRound4 = (option) => {
+		console.log('option', option);
+
+		if (
+			(option == '♠️' && drawnCard.cards[0].suit == 'SPADES') ||
+			(option == '♣️' && drawnCard.cards[0].suit == 'CLUBS') ||
+			(option == '♥️' && drawnCard.cards[0].suit == 'HEARTS') ||
+			(option == '♦️' && drawnCard.cards[0].suit == 'DIAMONDS')
+		) {
+			const verb = $RoundStore[$GameStore.round].punishment.right;
+			const amount = $RoundStore[$GameStore.round].punishment.amount;
+			checkMsg = `Correct! ${verb} ${amount}`;
+		} else {
+			const verb = $RoundStore[$GameStore.round].punishment.wrong;
+			const amount = $RoundStore[$GameStore.round].punishment.amount;
+			checkMsg = `Wrong! ${verb} ${amount}`;
+		}
+	};
+
 	const nextPlayer = () => {
 		// move to next player
 		GameStore.update((currentGame) => {
@@ -205,6 +225,7 @@
 		drawnCard = await drawCard(($DeckStore as INewDeck).deck_id);
 		console.log('drawnCard', drawnCard);
 		revealed = true;
+
 		// add card to player hand
 		PlayerStore.update((currentPlayers) => {
 			let copyPlayers = [...currentPlayers];
@@ -238,6 +259,11 @@
 			case 3:
 				checkRound3(option);
 				break;
+			case 4:
+				checkRound4(option);
+				break;
+
+			// TODO: set up UI for round 5-12, its logic for each round
 		}
 	};
 </script>
