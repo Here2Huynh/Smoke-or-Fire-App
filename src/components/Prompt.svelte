@@ -15,6 +15,9 @@
 	let checkMsg = '';
 	let correctness = null;
 	let showColumns = false;
+	let rightColumnIdx = 0;
+	let leftColumnIdx = 0;
+	let round5Mode = 'right';
 
 	const assignOptionStyle = (option: string) => {
 		let color;
@@ -198,8 +201,16 @@
 
 		showColumns = true;
 
-		const drawFour = await drawCard(($DeckStore as INewDeck).deck_id, 4);
-		const drawNextFour = await drawCard(($DeckStore as INewDeck).deck_id, 4);
+		let drawFour = await drawCard(($DeckStore as INewDeck).deck_id, 4);
+		let drawNextFour = await drawCard(($DeckStore as INewDeck).deck_id, 4);
+		drawFour.cards = drawFour.cards.map((card) => {
+			card.show = false;
+			return card;
+		});
+		drawNextFour.cards = drawNextFour.cards.map((card) => {
+			card.show = false;
+			return card;
+		});
 
 		const { left, right } = $RoundStore[$GameStore.round];
 
@@ -219,6 +230,29 @@
 		}
 
 		// drawCards and assign them to the columns
+	};
+
+	const showCard = () => {
+		const allRightColumnShown = $RoundStore[$GameStore.round].right.every((card) => card.show);
+		const allLeftColumnShown = $RoundStore[$GameStore.round].left.every((card) => card.show);
+
+		if (!allRightColumnShown && round5Mode === 'right') {
+			console.log(rightColumnIdx, $RoundStore[$GameStore.round].right);
+			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
+			rightColumnIdx++;
+		}
+
+		if (rightColumnIdx === 4 && allRightColumnShown) {
+			round5Mode = 'left';
+		}
+
+		if (!allLeftColumnShown && round5Mode === 'left') {
+			console.log(leftColumnIdx, $RoundStore[$GameStore.round].left);
+			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
+			leftColumnIdx++;
+		}
+
+		// TODO: add logic checking with players hand
 	};
 
 	const nextPlayer = () => {
@@ -371,18 +405,43 @@
 		<div class="grid grid-cols-2">
 			<div class="flex flex-col ml-8">
 				{#each $RoundStore[$GameStore.round].left as leftCard, idx (idx)}
-					<div class="ml-auto mr-auto w-28 h-28 ">
-						<img src="../static/card.png" alt="card-back" />
-					</div>
+					{#if leftCard.show}
+						<div class="ml-auto mr-auto w-24 h-24">
+							<img src={leftCard.image} alt={leftCard.value} />
+						</div>
+					{:else}
+						<div class="ml-auto mr-auto w-24 h-24">
+							<img src="../static/card.png" alt="card-back" />
+						</div>
+					{/if}
 				{/each}
 			</div>
 			<div class="flex flex-col mr-8">
 				{#each $RoundStore[$GameStore.round].right as rightCard, idx (idx)}
-					<div class="ml-auto mr-auto w-28 h-28 ">
-						<img src="../static/card.png" alt="card-back" />
-					</div>
+					{#if rightCard.show}
+						<div class="ml-auto mr-auto w-24 h-24">
+							<img src={rightCard.image} alt={rightCard.value} />
+						</div>
+					{:else}
+						<div class="ml-auto mr-auto w-24 h-24">
+							<img src="../static/card.png" alt="card-back" />
+						</div>
+					{/if}
 				{/each}
 			</div>
+		</div>
+
+		<div class="ml-auto mr-auto mt-8">
+			<button
+				on:click={showCard}
+				type="button"
+				class="text-white bg-amber-500 hover:bg-amber-400
+			focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
+			text-sm px-5 py-2.5 text-center mb-2 dark:bg-fuchsia-500 
+			dark:hover:bg-fuchsia-400 dark:focus:ring-fuchsia-600"
+			>
+				Show Card</button
+			>
 		</div>
 	{/if}
 </div>
