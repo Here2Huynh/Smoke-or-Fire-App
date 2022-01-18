@@ -32,6 +32,10 @@ const Rounds = writable({
 			wrong: 'take',
 			amount: 4
 		}
+	},
+	5: {
+		left: [],
+		right: []
 	}
 });
 

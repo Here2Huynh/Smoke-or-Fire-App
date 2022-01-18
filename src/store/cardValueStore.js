@@ -10,7 +10,7 @@ const CardValues = writable({
 	7: 7,
 	8: 8,
 	9: 9,
-	0: 10,
+	10: 10,
 	J: 11,
 	Q: 12,
 	K: 13,

@@ -8,11 +8,13 @@
 	import type { IAddToPile } from '../types/deck_api/addedToPile';
 	import type { ICardDrew } from '../types/deck_api/cardDrew';
 	import type { INewDeck } from '../types/deck_api/newDeck';
+	import { each } from 'svelte/internal';
 
 	let revealed = false;
 	let drawnCard: ICardDrew;
 	let checkMsg = '';
 	let correctness = null;
+	let showColumns = false;
 
 	const assignOptionStyle = (option: string) => {
 		let color;
@@ -186,6 +188,39 @@
 		}
 	};
 
+	const setupCardColumns = async () => {
+		GameStore.update((currentGame) => {
+			let copyGame = { ...currentGame };
+			copyGame.round++;
+
+			return copyGame;
+		});
+
+		showColumns = true;
+
+		const drawFour = await drawCard(($DeckStore as INewDeck).deck_id, 4);
+		const drawNextFour = await drawCard(($DeckStore as INewDeck).deck_id, 4);
+
+		const { left, right } = $RoundStore[$GameStore.round];
+
+		// console.log($GameStore.round, drawFour, drawNextFour, left, right);
+		if (left && right) {
+			RoundStore.update((currentRound) => {
+				let copyRound = { ...currentRound };
+
+				copyRound[$GameStore.round].left = [...drawFour.cards];
+
+				copyRound[$GameStore.round].right = [...drawNextFour.cards];
+
+				return copyRound;
+			});
+
+			console.log('$RoundStore', $RoundStore);
+		}
+
+		// drawCards and assign them to the columns
+	};
+
 	const nextPlayer = () => {
 		// move to next player
 		GameStore.update((currentGame) => {
@@ -258,6 +293,17 @@
 
 			// TODO: set up UI for round 5-12, its logic for each round
 		}
+
+		// check when round 5 begins
+		// all players have 4 cards in hand
+		// last player of round 4
+		let round5start = $PlayerStore.every((player) => player.cards.length === 4);
+		let lastPlayer = $PlayerStore[$PlayerStore.length - 1];
+		let lastPlayerCheck =
+			$GameStore.round === 4 && lastPlayer.name === $GameStore.currentPlayer.name;
+		if (round5start && lastPlayerCheck) {
+			await setupCardColumns();
+		}
 	};
 </script>
 
@@ -272,52 +318,71 @@
 		</h1>
 	</div>
 
-	{#if revealed}
-		<div class="ml-auto mr-auto w-32 h-32">
-			<!-- <img src="https://deckofcardsapi.com/static/img/AS.png" alt="" /> -->
+	{#if !showColumns}
+		{#if revealed}
+			<div class="ml-auto mr-auto w-32 h-32">
+				<img src={drawnCard.cards[0].image} alt={drawnCard.cards[0].value} />
+			</div>
+		{:else}
+			<div class="ml-auto mr-auto w-32 h-32">
+				<img src="../static/card.png" alt="card-back" />
+			</div>
+		{/if}
 
-			<img src={drawnCard.cards[0].image} alt={drawnCard.cards[0].value} />
-		</div>
-	{:else}
-		<div class="ml-auto mr-auto w-32 h-32">
-			<img src="../src/shared/assets/card.png" alt="" />
-		</div>
-	{/if}
-
-	{#if !revealed}
-		<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
-			{#each $RoundStore[$GameStore.round].options as option, idx (idx)}
+		{#if !revealed}
+			<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
+				<!-- {#if $RoundStore[$GameStore.round]} -->
+				{#each $RoundStore[$GameStore.round].options as option, idx (idx)}
+					<button
+						type="button"
+						on:click={handleOptionSelection(option)}
+						class={assignOptionStyle(option)}
+					>
+						{option}
+					</button>
+				{/each}
+				<!-- {/if} -->
+			</div>
+		{:else}
+			<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
 				<button
+					on:click={nextPlayer}
 					type="button"
-					on:click={handleOptionSelection(option)}
-					class={assignOptionStyle(option)}
+					class="text-white bg-amber-500 hover:bg-amber-400
+			focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
+			text-sm px-5 py-2.5 text-center mb-2 dark:bg-fuchsia-500 
+			dark:hover:bg-fuchsia-400 dark:focus:ring-fuchsia-600"
 				>
-					{option}
-				</button>
-			{/each}
-		</div>
-	{:else}
-		<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
-			<button
-				on:click={nextPlayer}
-				type="button"
-				class="text-white bg-amber-500 hover:bg-amber-400
-                focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
-                text-sm px-5 py-2.5 text-center mb-2 dark:bg-fuchsia-500 
-                dark:hover:bg-fuchsia-400 dark:focus:ring-fuchsia-600"
-			>
-				Next Player</button
-			>
-		</div>
-	{/if}
+					Next Player</button
+				>
+			</div>
+		{/if}
 
-	{#if revealed}
-		<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
-			{#if correctness}
-				<h1><span class="text-green-500">Correct!</span>{checkMsg}</h1>
-			{:else}
-				<h1><span class="text-rose-500">Wrong!</span>{checkMsg}</h1>
-			{/if}
+		{#if revealed}
+			<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
+				{#if correctness}
+					<h1><span class="text-green-500">Correct!</span>{checkMsg}</h1>
+				{:else}
+					<h1><span class="text-rose-500">Wrong!</span>{checkMsg}</h1>
+				{/if}
+			</div>
+		{/if}
+	{:else if $RoundStore[$GameStore.round].left.length && $RoundStore[$GameStore.round].right.length}
+		<div class="grid grid-cols-2">
+			<div class="flex flex-col ml-8">
+				{#each $RoundStore[$GameStore.round].left as leftCard, idx (idx)}
+					<div class="ml-auto mr-auto w-28 h-28 ">
+						<img src="../static/card.png" alt="card-back" />
+					</div>
+				{/each}
+			</div>
+			<div class="flex flex-col mr-8">
+				{#each $RoundStore[$GameStore.round].right as rightCard, idx (idx)}
+					<div class="ml-auto mr-auto w-28 h-28 ">
+						<img src="../static/card.png" alt="card-back" />
+					</div>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </div>
