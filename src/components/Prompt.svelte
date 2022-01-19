@@ -8,7 +8,6 @@
 	import type { IAddToPile } from '../types/deck_api/addedToPile';
 	import type { ICardDrew } from '../types/deck_api/cardDrew';
 	import type { INewDeck } from '../types/deck_api/newDeck';
-	import { each } from 'svelte/internal';
 
 	let revealed = false;
 	let drawnCard: ICardDrew;
@@ -236,20 +235,53 @@
 		const allRightColumnShown = $RoundStore[$GameStore.round].right.every((card) => card.show);
 		const allLeftColumnShown = $RoundStore[$GameStore.round].left.every((card) => card.show);
 
-		if (!allRightColumnShown && round5Mode === 'right') {
-			console.log(rightColumnIdx, $RoundStore[$GameStore.round].right);
-			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
-			rightColumnIdx++;
-		}
-
-		if (rightColumnIdx === 4 && allRightColumnShown) {
+		if (rightColumnIdx === 3 && allRightColumnShown) {
 			round5Mode = 'left';
 		}
 
+		if (!allRightColumnShown && round5Mode === 'right') {
+			console.log(
+				rightColumnIdx,
+				$RoundStore[$GameStore.round].right,
+				$RoundStore[$GameStore.round].right[rightColumnIdx].value
+			);
+			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
+			rightColumnIdx++;
+
+			const playersWithCard = [];
+			$PlayerStore.forEach((player) => {
+				const hasCards = player.cards.filter(
+					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
+				);
+
+				if (hasCards.length) {
+					playersWithCard.push(player);
+				}
+			});
+			// 	(player) =>
+			// 		player.cards.filter(
+			// 			(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
+			// 		).length
+			// );
+			console.log('playersWithCard', playersWithCard);
+			// TODO: if player has card, flip it down
+		}
+
 		if (!allLeftColumnShown && round5Mode === 'left') {
-			console.log(leftColumnIdx, $RoundStore[$GameStore.round].left);
+			console.log(
+				leftColumnIdx,
+				$RoundStore[$GameStore.round].left,
+				$RoundStore[$GameStore.round].left[rightColumnIdx].code
+			);
 			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
 			leftColumnIdx++;
+
+			const playersWithCard = $PlayerStore.filter((player) =>
+				player.cards.find(
+					(card) => card.code === $RoundStore[$GameStore.round].left[leftColumnIdx].code
+				)
+			);
+			console.log('playersWithCard', playersWithCard);
 		}
 
 		// TODO: add logic checking with players hand
@@ -336,6 +368,7 @@
 		let lastPlayerCheck =
 			$GameStore.round === 4 && lastPlayer.name === $GameStore.currentPlayer.name;
 		if (round5start && lastPlayerCheck) {
+			// TODO: add button to proceed to next round
 			await setupCardColumns();
 		}
 	};
@@ -367,6 +400,7 @@
 			<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
 				<!-- {#if $RoundStore[$GameStore.round]} -->
 				{#each $RoundStore[$GameStore.round].options as option, idx (idx)}
+					<!-- TODO: modularize buttons -->
 					<button
 						type="button"
 						on:click={handleOptionSelection(option)}
@@ -431,7 +465,7 @@
 			</div>
 		</div>
 
-		<div class="ml-auto mr-auto mt-8">
+		<div class="ml-auto mr-auto mt-16">
 			<button
 				on:click={showCard}
 				type="button"
