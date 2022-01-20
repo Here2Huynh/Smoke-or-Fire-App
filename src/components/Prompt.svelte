@@ -17,6 +17,7 @@
 	let rightColumnIdx = 0;
 	let leftColumnIdx = 0;
 	let round5Mode = 'right';
+	let proceedToRound5 = false;
 
 	const assignOptionStyle = (option: string) => {
 		let color;
@@ -368,8 +369,9 @@
 		let lastPlayerCheck =
 			$GameStore.round === 4 && lastPlayer.name === $GameStore.currentPlayer.name;
 		if (round5start && lastPlayerCheck) {
+			proceedToRound5 = true;
 			// TODO: add button to proceed to next round
-			await setupCardColumns();
+			// await setupCardColumns();
 		}
 	};
 </script>
@@ -398,7 +400,6 @@
 
 		{#if !revealed}
 			<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
-				<!-- {#if $RoundStore[$GameStore.round]} -->
 				{#each $RoundStore[$GameStore.round].options as option, idx (idx)}
 					<!-- TODO: modularize buttons -->
 					<button
@@ -409,9 +410,9 @@
 						{option}
 					</button>
 				{/each}
-				<!-- {/if} -->
 			</div>
-		{:else}
+			<!-- {:else if proceedToRound5} -->
+		{:else if !proceedToRound5}
 			<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
 				<button
 					on:click={nextPlayer}
@@ -427,13 +428,30 @@
 		{/if}
 
 		{#if revealed}
-			<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
+			<div
+				class="p-4 text-center text-2xl text-gray-900 dark:text-white"
+				class:mt-12={proceedToRound5}
+			>
 				{#if correctness}
 					<h1><span class="text-green-500">Correct!</span>{checkMsg}</h1>
 				{:else}
 					<h1><span class="text-rose-500">Wrong!</span>{checkMsg}</h1>
 				{/if}
 			</div>
+			{#if proceedToRound5}
+				<div class="ml-auto mr-auto text-center text-2xl text-gray-900 dark:text-white">
+					<button
+						on:click={setupCardColumns}
+						type="button"
+						class="text-white bg-amber-500 hover:bg-amber-400
+						focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
+						text-sm px-5 py-2.5 text-center mb-2 dark:bg-fuchsia-500 
+					dark:hover:bg-fuchsia-400 dark:focus:ring-fuchsia-600"
+					>
+						Proceed to Next Round</button
+					>
+				</div>
+			{/if}
 		{/if}
 	{:else if $RoundStore[$GameStore.round].left.length && $RoundStore[$GameStore.round].right.length}
 		<div class="grid grid-cols-2">
