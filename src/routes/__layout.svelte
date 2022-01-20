@@ -4,6 +4,8 @@
 	import Header from '../components/Header.svelte';
 	import Footer from '../components/Footer.svelte';
 
+	import '../styles/global.css';
+
 	let dark = true;
 
 	const toggleMode = (e) => {
@@ -32,8 +34,4 @@
 	@tailwind base;
 	@tailwind components;
 	@tailwind utilities;
-
-	:global(body) {
-		background-color: #f2eee2;
-	}
 </style>
