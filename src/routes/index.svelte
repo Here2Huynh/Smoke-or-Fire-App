@@ -34,6 +34,8 @@
 	import type { ICardDrew } from '../types/deck_api/cardDrew';
 	import type { INewDeck } from '../types/deck_api/newDeck';
 
+	import Button from '../lib/Button.svelte';
+
 	export let deck: INewDeck;
 	const { deck_id } = deck;
 
@@ -47,23 +49,6 @@
 
 			return copyDeck;
 		});
-
-		// console.log('$DeckStore', $DeckStore);
-
-		// if ($PlayerStore.length && deck_id) {
-		// $PlayerStore.forEach(async (player: IPlayer) => {
-		// 	const card = await drawCard(deck_id);
-		// 	console.log('card', card);
-		// 	const playerHand = await addToPile(
-		// 		deck_id,
-		// 		player.name,
-		// 		card.cards.map((card) => card.code).join()
-		// 	);
-		// 	console.log('playerHand', playerHand.piles);
-		// 	const pileCards = await listCardsInPile(deck_id, player.name);
-		// 	console.log('pileCards', pileCards);
-		// });
-		// }
 	});
 
 	const listCardsInPile = async (deck_id: string, pile_name: string) => {
@@ -81,13 +66,6 @@
 	<GameUI />
 {:else}
 	<div class="flex justify-center mt-60">
-		<button
-			on:click={() => goto('/setup')}
-			type="button"
-			class="text-white bg-amber-500 hover:bg-amber-400
-        focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
-        text-sm px-5 py-2.5 text-center mb-2 dark:bg-amber-500 
-        dark:hover:bg-amber-400 dark:focus:ring-amber-600">Setup Game</button
-		>
+		<Button label="Setup Game" on:click={() => goto('/setup')} />
 	</div>
 {/if}

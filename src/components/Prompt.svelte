@@ -9,6 +9,8 @@
 	import type { ICardDrew } from '../types/deck_api/cardDrew';
 	import type { INewDeck } from '../types/deck_api/newDeck';
 
+	import Button from '$lib/Button.svelte';
+
 	let revealed = false;
 	let drawnCard: ICardDrew;
 	let checkMsg = '';
@@ -18,46 +20,6 @@
 	let leftColumnIdx = 0;
 	let round5Mode = 'right';
 	let proceedToRound5 = false;
-
-	const assignOptionStyle = (option: string) => {
-		let color;
-		switch (option) {
-			case 'Smoke':
-				color = 'slate';
-				break;
-			case 'Fire':
-				color = 'amber';
-				break;
-			case 'High':
-				color = 'orange';
-				break;
-			case 'Low':
-				color = 'cyan';
-				break;
-			case 'In':
-				color = 'lime';
-				break;
-			case 'Out':
-				color = 'rose';
-				break;
-			case '♠️':
-				color = 'stone';
-				break;
-			case '♣️':
-				color = 'stone';
-				break;
-			case '♥️':
-				color = 'red';
-				break;
-			case '♦️':
-				color = 'red';
-				break;
-		}
-
-		return `text-white bg-${color}-500 hover:bg-${color}-400 focus:ring-4 
-                focus:ring-${color}-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
-                mr-2 mb-2`;
-	};
 
 	const drawCard = async (deck_id: string, cardCount: number = 1): Promise<ICardDrew> => {
 		const url = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=${cardCount}`;
@@ -402,28 +364,16 @@
 			<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
 				{#each $RoundStore[$GameStore.round].options as option, idx (idx)}
 					<!-- TODO: modularize buttons -->
-					<button
-						type="button"
-						on:click={handleOptionSelection(option)}
-						class={assignOptionStyle(option)}
-					>
+					<Button
 						{option}
-					</button>
+						label={option}
+						on:click={async () => await handleOptionSelection(option)}
+					/>
 				{/each}
 			</div>
-			<!-- {:else if proceedToRound5} -->
 		{:else if !proceedToRound5}
 			<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
-				<button
-					on:click={nextPlayer}
-					type="button"
-					class="text-white bg-amber-500 hover:bg-amber-400
-			focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
-			text-sm px-5 py-2.5 text-center mb-2 dark:bg-fuchsia-500 
-			dark:hover:bg-fuchsia-400 dark:focus:ring-fuchsia-600"
-				>
-					Next Player</button
-				>
+				<Button option="game" label="Next Player" on:click={nextPlayer} />
 			</div>
 		{/if}
 
@@ -440,16 +390,7 @@
 			</div>
 			{#if proceedToRound5}
 				<div class="ml-auto mr-auto text-center text-2xl text-gray-900 dark:text-white">
-					<button
-						on:click={setupCardColumns}
-						type="button"
-						class="text-white bg-amber-500 hover:bg-amber-400
-						focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
-						text-sm px-5 py-2.5 text-center mb-2 dark:bg-fuchsia-500 
-					dark:hover:bg-fuchsia-400 dark:focus:ring-fuchsia-600"
-					>
-						Proceed to Next Round</button
-					>
+					<Button option="game" label="Proceed to Next Round" on:click={setupCardColumns} />
 				</div>
 			{/if}
 		{/if}
@@ -484,16 +425,7 @@
 		</div>
 
 		<div class="ml-auto mr-auto mt-16">
-			<button
-				on:click={showCard}
-				type="button"
-				class="text-white bg-amber-500 hover:bg-amber-400
-			focus:ring-4 focus:ring-amber-300 font-medium rounded-lg 
-			text-sm px-5 py-2.5 text-center mb-2 dark:bg-fuchsia-500 
-			dark:hover:bg-fuchsia-400 dark:focus:ring-fuchsia-600"
-			>
-				Show Card</button
-			>
+			<Button option="game" label="Show Card" on:click={showCard} />
 		</div>
 	{/if}
 </div>
