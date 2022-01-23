@@ -30,7 +30,11 @@
 			<div class="col-start-3 col-span-2 grid grid-cols-4 w-24">
 				{#each player.cards as card, idx (idx)}
 					<div in:fly={{ x: 200, duration: 1000 }} class="w-16 h-16">
-						<img src={card.image} alt={card.value} />
+						{#if card.show}
+							<img src={card.image} alt={card.value} />
+						{:else}
+							<img src="/card.png" alt="card-back" />
+						{/if}
 					</div>
 				{/each}
 			</div>

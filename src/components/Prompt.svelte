@@ -241,7 +241,24 @@
 				)
 			);
 			console.log('playersWithCard', playersWithCard);
+			// playersWithCard;
+			PlayerStore.update((currentPlayers) => {
+				const copyPlayers = [...currentPlayers];
+
+				playersWithCard.forEach((player) => {
+					const matchingPlayer = copyPlayers.find((p) => p.name === player.name);
+					console.log('matchingPlayer', matchingPlayer);
+					const matchingCard = matchingPlayer.cards.find(
+						(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
+					);
+					matchingCard.show = false;
+				});
+
+				return copyPlayers;
+			});
 			// TODO: if player has card, flip it down
+
+			// TODO: change the prompt label to tell players who as the cards
 
 			rightColumnIdx++;
 		}
@@ -293,10 +310,11 @@
 		// console.log('option', option);
 		// console.log('$GameStore.currentPlayer', $GameStore.currentPlayer);
 		// console.log('$GameStore.round', $GameStore.round);
-		// console.log('$PlayerStore', $PlayerStore);
+		console.log('$PlayerStore', $PlayerStore);
 
 		// reveal card
 		drawnCard = await drawCard(($DeckStore as INewDeck).deck_id);
+		drawnCard.cards[0].show = true;
 		console.log('drawnCard', drawnCard);
 		revealed = true;
 
@@ -372,7 +390,7 @@
 			</div>
 		{:else}
 			<div class="ml-auto mr-auto w-32 h-32">
-				<img src="../static/card.png" alt="card-back" />
+				<img src="/card.png" alt="card-back" />
 			</div>
 		{/if}
 
@@ -420,7 +438,7 @@
 						</div>
 					{:else}
 						<div class="ml-auto mr-auto w-24 h-24">
-							<img src="../static/card.png" alt="card-back" />
+							<img src="/card.png" alt="card-back" />
 						</div>
 					{/if}
 				{/each}
@@ -433,7 +451,7 @@
 						</div>
 					{:else}
 						<div class="ml-auto mr-auto w-24 h-24">
-							<img src="../static/card.png" alt="card-back" />
+							<img src="/card.png" alt="card-back" />
 						</div>
 					{/if}
 				{/each}
