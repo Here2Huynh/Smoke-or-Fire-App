@@ -75,16 +75,28 @@
 	};
 
 	const checkRound2 = (option: string) => {
-		// TODO: fix comparison bug
 		const firstCard = $GameStore.currentPlayer.cards[0];
 		const secondCard = $GameStore.currentPlayer.cards[1];
 
-		const first = firstCard.code.split('');
-		const second = secondCard.code.split('');
+		let firstValue, secondValue;
+
+		if (isNaN(parseInt(firstCard.value))) {
+			firstValue = $CardValueStore[firstCard.value];
+		} else {
+			firstValue = parseInt(firstCard.value);
+		}
+
+		if (isNaN(parseInt(secondCard.value))) {
+			secondValue = $CardValueStore[secondCard.value];
+		} else {
+			secondValue = parseInt(secondCard.value);
+		}
+
+		console.log(firstCard, secondCard, firstValue, secondValue);
 
 		if (
-			(option === 'Low' && $CardValueStore[first[0]] >= $CardValueStore[second[0]]) ||
-			(option === 'High' && $CardValueStore[first[0]] < $CardValueStore[second[0]])
+			(option === 'Low' && firstValue >= secondValue) ||
+			(option === 'High' && firstValue < secondValue)
 		) {
 			correctness = true;
 			const verb = $RoundStore[$GameStore.round].punishment.right;
