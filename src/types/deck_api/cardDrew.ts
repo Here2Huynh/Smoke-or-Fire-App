@@ -1,8 +1,8 @@
 export interface ICardDrew {
-	success: boolean;
-	cards: ICard[];
-	deck_id: string;
-	remaining: number;
+	success?: boolean;
+	cards?: ICard[];
+	deck_id?: string;
+	remaining?: number;
 }
 
 interface ICard {
@@ -11,4 +11,9 @@ interface ICard {
 	suit: string;
 	code: string;
 	show: boolean;
+}
+
+export interface IApiError extends ICardDrew {
+	status?: number;
+	error?: string;
 }

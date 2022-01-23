@@ -6,7 +6,7 @@
 	import CardValueStore from '../store/cardValueStore';
 
 	import type { IAddToPile } from '../types/deck_api/addedToPile';
-	import type { ICardDrew } from '../types/deck_api/cardDrew';
+	import type { IApiError, ICardDrew } from '../types/deck_api/cardDrew';
 	import type { INewDeck } from '../types/deck_api/newDeck';
 
 	import Button from '$lib/Button.svelte';
@@ -21,7 +21,10 @@
 	let round5Mode = 'right';
 	let proceedToRound5 = false;
 
-	const drawCard = async (deck_id: string, cardCount: number = 1): Promise<ICardDrew> => {
+	const drawCard = async (
+		deck_id: string,
+		cardCount: number = 1
+	): Promise<ICardDrew | IApiError> => {
 		const url = `https://deckofcardsapi.com/api/deck/${deck_id}/draw/?count=${cardCount}`;
 		const res = await fetch(url);
 
@@ -29,12 +32,13 @@
 			return await res.json();
 		}
 
-		// TODO: add error handling to these api calls
-		// return {
-		// 	status: res.status,
-		// 	error: new Error(`Could not load ${url}`)
-		// };
+		return {
+			status: res.status,
+			error: `Could not load ${url}`
+		};
 	};
+
+	// TODO: add sound effect for right and wrong selection?
 
 	// TODO: sync store and api
 	const addToPile = async (
@@ -71,6 +75,7 @@
 	};
 
 	const checkRound2 = (option: string) => {
+		// TODO: fix comparison bug
 		const firstCard = $GameStore.currentPlayer.cards[0];
 		const secondCard = $GameStore.currentPlayer.cards[1];
 
@@ -176,13 +181,11 @@
 
 		const { left, right } = $RoundStore[$GameStore.round];
 
-		// console.log($GameStore.round, drawFour, drawNextFour, left, right);
 		if (left && right) {
 			RoundStore.update((currentRound) => {
 				let copyRound = { ...currentRound };
 
 				copyRound[$GameStore.round].left = [...drawFour.cards];
-
 				copyRound[$GameStore.round].right = [...drawNextFour.cards];
 
 				return copyRound;
@@ -221,11 +224,7 @@
 					playersWithCard.push(player);
 				}
 			});
-			// 	(player) =>
-			// 		player.cards.filter(
-			// 			(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
-			// 		).length
-			// );
+
 			console.log('playersWithCard', playersWithCard);
 			// TODO: if player has card, flip it down
 		}
@@ -239,12 +238,18 @@
 			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
 			leftColumnIdx++;
 
-			const playersWithCard = $PlayerStore.filter((player) =>
-				player.cards.find(
-					(card) => card.code === $RoundStore[$GameStore.round].left[leftColumnIdx].code
-				)
-			);
-			console.log('playersWithCard', playersWithCard);
+			// const playersWithCard = [];
+			// $PlayerStore.forEach((player) => {
+			// 	const hasCards = player.cards.filter(
+			// 		(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
+			// 	);
+
+			// 	if (hasCards.length) {
+			// 		playersWithCard.push(player);
+			// 	}
+			// });
+
+			// console.log('playersWithCard2', playersWithCard);
 		}
 
 		// TODO: add logic checking with players hand
@@ -272,11 +277,11 @@
 	};
 
 	const handleOptionSelection = async (option): Promise<any> => {
-		console.log('$GameStore', $GameStore);
-		console.log('option', option);
-		console.log('$GameStore.currentPlayer', $GameStore.currentPlayer);
-		console.log('$GameStore.round', $GameStore.round);
-		console.log('$PlayerStore', $PlayerStore);
+		// console.log('$GameStore', $GameStore);
+		// console.log('option', option);
+		// console.log('$GameStore.currentPlayer', $GameStore.currentPlayer);
+		// console.log('$GameStore.round', $GameStore.round);
+		// console.log('$PlayerStore', $PlayerStore);
 
 		// reveal card
 		drawnCard = await drawCard(($DeckStore as INewDeck).deck_id);
@@ -332,7 +337,6 @@
 			$GameStore.round === 4 && lastPlayer.name === $GameStore.currentPlayer.name;
 		if (round5start && lastPlayerCheck) {
 			proceedToRound5 = true;
-			// TODO: add button to proceed to next round
 			// await setupCardColumns();
 		}
 	};

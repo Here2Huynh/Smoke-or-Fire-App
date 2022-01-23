@@ -1,7 +1,4 @@
 <script context="module">
-	// TODO: add game page, set up logic, deal players hand
-
-	/** @type {import('@sveltejs/kit').Load} */
 	export async function load({ params, fetch, session, stuff }) {
 		const url = `https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1`;
 		const res = await fetch(url);
