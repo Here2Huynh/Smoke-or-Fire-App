@@ -114,8 +114,28 @@
 		const firstCard = $GameStore.currentPlayer.cards[0];
 		const secondCard = $GameStore.currentPlayer.cards[1];
 
-		const first = firstCard.code.split('');
-		const second = secondCard.code.split('');
+		// const first = firstCard.code.split('');
+		// const second = secondCard.code.split('');
+
+		let firstValue, secondValue, thirdValue;
+
+		if (isNaN(parseInt(firstCard.value))) {
+			firstValue = $CardValueStore[firstCard.value];
+		} else {
+			firstValue = parseInt(firstCard.value);
+		}
+
+		if (isNaN(parseInt(secondCard.value))) {
+			secondValue = $CardValueStore[secondCard.value];
+		} else {
+			secondValue = parseInt(secondCard.value);
+		}
+
+		if (isNaN(parseInt(drawnCard.cards[0].value))) {
+			thirdValue = $CardValueStore[drawnCard.cards[0].value];
+		} else {
+			thirdValue = parseInt(drawnCard.cards[0].value);
+		}
 
 		const isWithin = (rangeStart, rangeEnd, value) => {
 			return (
@@ -124,18 +144,8 @@
 		};
 
 		if (
-			(option === 'In' &&
-				isWithin(
-					$CardValueStore[first[0]],
-					$CardValueStore[second[0]],
-					$CardValueStore[drawnCard.cards[0].value]
-				)) ||
-			(option === 'Out' &&
-				!isWithin(
-					$CardValueStore[first[0]],
-					$CardValueStore[second[0]],
-					$CardValueStore[drawnCard.cards[0].value]
-				))
+			(option === 'In' && isWithin(firstValue, secondValue, thirdValue)) ||
+			(option === 'Out' && !isWithin(firstValue, secondValue, thirdValue))
 		) {
 			correctness = true;
 			const verb = $RoundStore[$GameStore.round].punishment.right;
@@ -224,21 +234,16 @@
 				$RoundStore[$GameStore.round].right[rightColumnIdx].value
 			);
 			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
-			rightColumnIdx++;
 
-			const playersWithCard = [];
-			$PlayerStore.forEach((player) => {
-				const hasCards = player.cards.filter(
+			const playersWithCard = $PlayerStore.filter((player) =>
+				player.cards.some(
 					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
-				);
-
-				if (hasCards.length) {
-					playersWithCard.push(player);
-				}
-			});
-
+				)
+			);
 			console.log('playersWithCard', playersWithCard);
 			// TODO: if player has card, flip it down
+
+			rightColumnIdx++;
 		}
 
 		if (!allLeftColumnShown && round5Mode === 'left') {
@@ -248,20 +253,15 @@
 				$RoundStore[$GameStore.round].left[rightColumnIdx].code
 			);
 			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
+
+			const playersWithCard = $PlayerStore.filter((player) =>
+				player.cards.some(
+					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
+				)
+			);
+			console.log('playersWithCard2', playersWithCard);
+
 			leftColumnIdx++;
-
-			// const playersWithCard = [];
-			// $PlayerStore.forEach((player) => {
-			// 	const hasCards = player.cards.filter(
-			// 		(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
-			// 	);
-
-			// 	if (hasCards.length) {
-			// 		playersWithCard.push(player);
-			// 	}
-			// });
-
-			// console.log('playersWithCard2', playersWithCard);
 		}
 
 		// TODO: add logic checking with players hand
