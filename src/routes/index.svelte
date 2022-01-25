@@ -38,6 +38,8 @@
 
 	const cardImgUrl = 'https://deckofcardsapi.com/static/img/5C.svg';
 
+	// TODO: add players' play history, player can view by clicking on their box
+
 	onMount(async () => {
 		DeckStore.update((currentDeck) => {
 			let copyDeck = currentDeck;

@@ -10,15 +10,13 @@
 	import type { INewDeck } from '../types/deck_api/newDeck';
 
 	import Button from '$lib/Button.svelte';
+	import CardColumns from './CardColumns.svelte';
 
 	let revealed = false;
 	let drawnCard: ICardDrew;
 	let checkMsg = '';
 	let correctness = null;
 	let showColumns = false;
-	let rightColumnIdx = 0;
-	let leftColumnIdx = 0;
-	let round5Mode = 'right';
 	let proceedToRound5 = false;
 
 	const drawCard = async (
@@ -40,7 +38,8 @@
 
 	// TODO: add sound effect for right and wrong selection?
 
-	// TODO: sync store and api
+	// TODO: sync store and api, needed for when the cards get reshuffled for pyramid round
+
 	const addToPile = async (
 		deck_id: string,
 		pile_name: string,
@@ -219,71 +218,6 @@
 		// drawCards and assign them to the columns
 	};
 
-	const showCard = () => {
-		const allRightColumnShown = $RoundStore[$GameStore.round].right.every((card) => card.show);
-		const allLeftColumnShown = $RoundStore[$GameStore.round].left.every((card) => card.show);
-
-		if (rightColumnIdx === 3 && allRightColumnShown) {
-			round5Mode = 'left';
-		}
-
-		if (!allRightColumnShown && round5Mode === 'right') {
-			console.log(
-				rightColumnIdx,
-				$RoundStore[$GameStore.round].right,
-				$RoundStore[$GameStore.round].right[rightColumnIdx].value
-			);
-			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
-
-			const playersWithCard = $PlayerStore.filter((player) =>
-				player.cards.some(
-					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
-				)
-			);
-			console.log('playersWithCard', playersWithCard);
-			// playersWithCard;
-			PlayerStore.update((currentPlayers) => {
-				const copyPlayers = [...currentPlayers];
-
-				playersWithCard.forEach((player) => {
-					const matchingPlayer = copyPlayers.find((p) => p.name === player.name);
-					console.log('matchingPlayer', matchingPlayer);
-					const matchingCard = matchingPlayer.cards.find(
-						(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
-					);
-					matchingCard.show = false;
-				});
-
-				return copyPlayers;
-			});
-			// TODO: if player has card, flip it down
-
-			// TODO: change the prompt label to tell players who as the cards
-
-			rightColumnIdx++;
-		}
-
-		if (!allLeftColumnShown && round5Mode === 'left') {
-			console.log(
-				leftColumnIdx,
-				$RoundStore[$GameStore.round].left,
-				$RoundStore[$GameStore.round].left[rightColumnIdx].code
-			);
-			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
-
-			const playersWithCard = $PlayerStore.filter((player) =>
-				player.cards.some(
-					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
-				)
-			);
-			console.log('playersWithCard2', playersWithCard);
-
-			leftColumnIdx++;
-		}
-
-		// TODO: add logic checking with players hand
-	};
-
 	const nextPlayer = () => {
 		// move to next player
 		GameStore.update((currentGame) => {
@@ -358,17 +292,16 @@
 			// TODO: set up UI for round 5-12, its logic for each round
 		}
 
-		// check when round 5 begins
-		// all players have 4 cards in hand
-		// last player of round 4
+		/**
+		 * check when round 5 begins
+		 * - all players have 4 cards in hand
+		 * - last player of round 4
+		 */
 		let round5start = $PlayerStore.every((player) => player.cards.length === 4);
 		let lastPlayer = $PlayerStore[$PlayerStore.length - 1];
 		let lastPlayerCheck =
 			$GameStore.round === 4 && lastPlayer.name === $GameStore.currentPlayer.name;
-		if (round5start && lastPlayerCheck) {
-			proceedToRound5 = true;
-			// await setupCardColumns();
-		}
+		if (round5start && lastPlayerCheck) proceedToRound5 = true;
 	};
 </script>
 
@@ -378,6 +311,7 @@
     dark:border-gray-700 z-10 flex flex-col"
 >
 	<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
+		<!-- TODO: add round 5 prompt checking here -->
 		<h1>
 			It's <span class="font-bold text-amber-400">{$GameStore.currentPlayer.name}</span> turn.
 		</h1>
@@ -397,7 +331,6 @@
 		{#if !revealed}
 			<div class="ml-auto mr-auto mt-20 text-center text-2xl text-gray-900 dark:text-white">
 				{#each $RoundStore[$GameStore.round].options as option, idx (idx)}
-					<!-- TODO: modularize buttons -->
 					<Button
 						{option}
 						label={option}
@@ -429,37 +362,7 @@
 			{/if}
 		{/if}
 	{:else if $RoundStore[$GameStore.round].left.length && $RoundStore[$GameStore.round].right.length}
-		<div class="grid grid-cols-2">
-			<div class="flex flex-col ml-8">
-				{#each $RoundStore[$GameStore.round].left as leftCard, idx (idx)}
-					{#if leftCard.show}
-						<div class="ml-auto mr-auto w-24 h-24">
-							<img src={leftCard.image} alt={leftCard.value} />
-						</div>
-					{:else}
-						<div class="ml-auto mr-auto w-24 h-24">
-							<img src="/card.png" alt="card-back" />
-						</div>
-					{/if}
-				{/each}
-			</div>
-			<div class="flex flex-col mr-8">
-				{#each $RoundStore[$GameStore.round].right as rightCard, idx (idx)}
-					{#if rightCard.show}
-						<div class="ml-auto mr-auto w-24 h-24">
-							<img src={rightCard.image} alt={rightCard.value} />
-						</div>
-					{:else}
-						<div class="ml-auto mr-auto w-24 h-24">
-							<img src="/card.png" alt="card-back" />
-						</div>
-					{/if}
-				{/each}
-			</div>
-		</div>
-
-		<div class="ml-auto mr-auto mt-16">
-			<Button option="game" label="Show Card" on:click={showCard} />
-		</div>
+		<!-- TODO: split this off to separate component -->
+		<CardColumns />
 	{/if}
 </div>
