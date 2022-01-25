@@ -36,6 +36,10 @@ const Rounds = writable({
 	5: {
 		left: [],
 		right: []
+		// punishment: {
+		// 	right: 'give',
+		// 	wrong: 'take'
+		// }
 	}
 });
 

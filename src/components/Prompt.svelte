@@ -11,13 +11,16 @@
 
 	import Button from '$lib/Button.svelte';
 	import CardColumns from './CardColumns.svelte';
+	import { each } from 'svelte/internal';
 
 	let revealed = false;
 	let drawnCard: ICardDrew;
 	let checkMsg = '';
+	let winnerMsg;
 	let correctness = null;
 	let showColumns = false;
 	let proceedToRound5 = false;
+	let playersWithCard = [];
 
 	const drawCard = async (
 		deck_id: string,
@@ -303,6 +306,14 @@
 			$GameStore.round === 4 && lastPlayer.name === $GameStore.currentPlayer.name;
 		if (round5start && lastPlayerCheck) proceedToRound5 = true;
 	};
+
+	const handleCardReveal = (e) => {
+		// TODO: change the player name highlight
+		console.log('e.detail', e.detail);
+		winnerMsg = { round5Mode: e.detail.round5Mode, rightColumnIdx: e.detail.rightColumnIdx };
+		playersWithCard = e.detail.playersWithCard;
+		console.log('playersWithCard', playersWithCard);
+	};
 </script>
 
 <div
@@ -312,9 +323,20 @@
 >
 	<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
 		<!-- TODO: add round 5 prompt checking here -->
-		<h1>
-			It's <span class="font-bold text-amber-400">{$GameStore.currentPlayer.name}</span> turn.
-		</h1>
+
+		{#if proceedToRound5}
+			{#each playersWithCard as player}
+				<h1>
+					<span class="font-bold text-amber-400">{player.name}</span>
+					{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
+					{winnerMsg.rightColumnIdx}
+				</h1>
+			{/each}
+		{:else}
+			<h1>
+				It's <span class="font-bold text-amber-400">{$GameStore.currentPlayer.name}</span> turn.
+			</h1>
+		{/if}
 	</div>
 
 	{#if !showColumns}
@@ -362,7 +384,6 @@
 			{/if}
 		{/if}
 	{:else if $RoundStore[$GameStore.round].left.length && $RoundStore[$GameStore.round].right.length}
-		<!-- TODO: split this off to separate component -->
-		<CardColumns />
+		<CardColumns on:reveal-card={handleCardReveal} />
 	{/if}
 </div>

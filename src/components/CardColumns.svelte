@@ -1,4 +1,5 @@
 <script>
+	import { createEventDispatcher } from 'svelte';
 	import GameStore from '../store/gameStore';
 	import RoundStore from '../store/roundStore';
 	import PlayerStore from '../store/playerStore';
@@ -9,9 +10,12 @@
 	let leftColumnIdx = 0;
 	let round5Mode = 'right';
 
+	const dispatch = createEventDispatcher();
+
 	const showCard = () => {
 		const allRightColumnShown = $RoundStore[$GameStore.round].right.every((card) => card.show);
 		const allLeftColumnShown = $RoundStore[$GameStore.round].left.every((card) => card.show);
+		let playersWithCard;
 
 		console.log(rightColumnIdx, allRightColumnShown);
 
@@ -27,7 +31,7 @@
 			);
 			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
 
-			const playersWithCard = $PlayerStore.filter((player) =>
+			playersWithCard = $PlayerStore.filter((player) =>
 				player.cards.some(
 					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
 				)
@@ -61,7 +65,7 @@
 			);
 			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
 
-			const playersWithCard = $PlayerStore.filter((player) =>
+			playersWithCard = $PlayerStore.filter((player) =>
 				player.cards.some(
 					(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
 				)
@@ -83,6 +87,14 @@
 			});
 
 			leftColumnIdx++;
+		}
+
+		if (round5Mode === 'right') {
+			dispatch('reveal-card', { rightColumnIdx, round5Mode, playersWithCard });
+		}
+
+		if (round5Mode === 'left') {
+			dispatch('reveal-card', { leftColumnIdx, round5Mode, playersWithCard });
 		}
 
 		// TODO: add logic checking with players hand
