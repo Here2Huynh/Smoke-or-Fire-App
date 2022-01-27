@@ -3,7 +3,7 @@ import { writable } from 'svelte/store';
 const Game = writable({
 	started: false,
 	currentPlayer: null,
-	players: [],
+	playersWithCard: [],
 	round: 1
 });
 

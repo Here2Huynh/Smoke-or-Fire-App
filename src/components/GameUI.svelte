@@ -5,6 +5,10 @@
 	import GameStore from '../store/gameStore';
 
 	import Prompt from '../components/Prompt.svelte';
+
+	const checkPlayer = (player) => {
+		return;
+	};
 </script>
 
 <div class="grid grid-rows-5 grid-cols-6 gap-16 auto-cols-max game-grid m-2">
@@ -21,8 +25,9 @@
 		>
 			<h5
 				class="mt-auto mb-auto text-2xl font-bold text-gray-900 dark:text-white"
-				class:text-amber-400={$GameStore.currentPlayer.name === player.name}
-				class:dark:text-amber-400={$GameStore.currentPlayer.name === player.name}
+				class:text-amber-400={$GameStore.round < 5 && $GameStore.currentPlayer.name === player.name}
+				class:dark:text-amber-400={$GameStore.round < 5 &&
+					$GameStore.currentPlayer.name === player.name}
 			>
 				{player.name}
 			</h5>

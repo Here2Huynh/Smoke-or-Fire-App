@@ -5,13 +5,14 @@
 	import DeckStore from '../store/deckStore';
 	import CardValueStore from '../store/cardValueStore';
 
+	import confetti from 'canvas-confetti';
+
 	import type { IAddToPile } from '../types/deck_api/addedToPile';
 	import type { IApiError, ICardDrew } from '../types/deck_api/cardDrew';
 	import type { INewDeck } from '../types/deck_api/newDeck';
 
 	import Button from '$lib/Button.svelte';
 	import CardColumns from './CardColumns.svelte';
-	import { each } from 'svelte/internal';
 
 	let revealed = false;
 	let drawnCard: ICardDrew;
@@ -21,6 +22,26 @@
 	let showColumns = false;
 	let proceedToRound5 = false;
 	let playersWithCard = [];
+
+	const myCanvas = document.createElement('canvas');
+	document.body.appendChild(myCanvas);
+
+	// const myConfetti = confetti.create(myCanvas, {
+	// 	resize: true,
+	// 	useWorker: true
+	// });
+
+	// function randomInRange(min, max) {
+	// 	return Math.random() * (max - min) + min;
+	// }
+
+	const fireConfettiBoyzzzz = () => {
+		confetti({
+			particleCount: 100,
+			spread: 70,
+			origin: { y: 0.6 }
+		});
+	};
 
 	const drawCard = async (
 		deck_id: string,
@@ -68,6 +89,8 @@
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
 			checkMsg = ` ${verb} ${amount}`;
+
+			fireConfettiBoyzzzz();
 		} else {
 			correctness = false;
 			const verb = $RoundStore[$GameStore.round].punishment.wrong;
@@ -104,6 +127,8 @@
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
 			checkMsg = ` ${verb} ${amount}`;
+
+			fireConfettiBoyzzzz();
 		} else {
 			correctness = false;
 			const verb = $RoundStore[$GameStore.round].punishment.wrong;
@@ -115,9 +140,6 @@
 	const checkRound3 = (option: string) => {
 		const firstCard = $GameStore.currentPlayer.cards[0];
 		const secondCard = $GameStore.currentPlayer.cards[1];
-
-		// const first = firstCard.code.split('');
-		// const second = secondCard.code.split('');
 
 		let firstValue, secondValue, thirdValue;
 
@@ -153,6 +175,8 @@
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
 			checkMsg = ` ${verb} ${amount}`;
+
+			fireConfettiBoyzzzz();
 		} else {
 			correctness = false;
 			const verb = $RoundStore[$GameStore.round].punishment.wrong;
@@ -174,6 +198,10 @@
 			const verb = $RoundStore[$GameStore.round].punishment.right;
 			const amount = $RoundStore[$GameStore.round].punishment.amount;
 			checkMsg = ` ${verb} ${amount}`;
+
+			fireConfettiBoyzzzz();
+
+			// TODO: add option to toggle confetti
 		} else {
 			correctness = false;
 			const verb = $RoundStore[$GameStore.round].punishment.wrong;
@@ -222,6 +250,8 @@
 	};
 
 	const nextPlayer = () => {
+		confetti.reset();
+
 		// move to next player
 		GameStore.update((currentGame) => {
 			let copyGame = { ...currentGame };
@@ -243,7 +273,7 @@
 	};
 
 	const handleOptionSelection = async (option): Promise<any> => {
-		// console.log('$GameStore', $GameStore);
+		console.log('$GameStore', $GameStore);
 		// console.log('option', option);
 		// console.log('$GameStore.currentPlayer', $GameStore.currentPlayer);
 		// console.log('$GameStore.round', $GameStore.round);
@@ -312,7 +342,12 @@
 		console.log('e.detail', e.detail);
 		winnerMsg = { round5Mode: e.detail.round5Mode, rightColumnIdx: e.detail.rightColumnIdx };
 		playersWithCard = e.detail.playersWithCard;
+
 		console.log('playersWithCard', playersWithCard);
+
+		if (playersWithCard.length) {
+			fireConfettiBoyzzzz();
+		}
 	};
 </script>
 

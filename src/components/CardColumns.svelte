@@ -89,6 +89,12 @@
 			leftColumnIdx++;
 		}
 
+		GameStore.update((currentGame) => {
+			let copyGame = { ...currentGame };
+			currentGame.playersWithCard = playersWithCard;
+			return currentGame;
+		});
+
 		if (round5Mode === 'right') {
 			dispatch('reveal-card', { rightColumnIdx, round5Mode, playersWithCard });
 		}
