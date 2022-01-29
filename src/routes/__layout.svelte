@@ -4,9 +4,11 @@
 	import Header from '../components/Header.svelte';
 	import Footer from '../components/Footer.svelte';
 
+	import ConfigStore from '../store/configStore';
+
 	import '../styles/global.css';
 
-	let dark = true;
+	let dark = $ConfigStore.darkMode;
 
 	const toggleMode = (e) => {
 		const darkMode = e.detail;
@@ -25,9 +27,15 @@
 </svelte:head>
 
 <div class:dark class="font-sans">
-	<Header />
+	<header>
+		<Header />
+	</header>
+
 	<slot />
-	<Footer bind:dark on:toggle-mode={toggleMode} />
+
+	<footer>
+		<Footer bind:dark on:toggle-mode={toggleMode} />
+	</footer>
 </div>
 
 <style>

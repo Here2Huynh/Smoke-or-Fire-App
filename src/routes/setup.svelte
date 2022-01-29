@@ -86,6 +86,7 @@
 			<Button label="Start New Game" on:click={newGameSetup} />
 		</div>
 
+		<!-- TODO: add history tracking so it shows on the next time user goes back -->
 		{#if $GameStore.started}
 			<div class="mt-4">
 				<Button option="game" label="Continue Game" on:click={() => goto('/')} />

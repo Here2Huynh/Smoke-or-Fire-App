@@ -4,6 +4,7 @@
 	import PlayerStore from '../store/playerStore';
 	import DeckStore from '../store/deckStore';
 	import CardValueStore from '../store/cardValueStore';
+	import ConfigStore from '../store/configStore';
 
 	import confetti from 'canvas-confetti';
 
@@ -26,21 +27,14 @@
 	const myCanvas = document.createElement('canvas');
 	document.body.appendChild(myCanvas);
 
-	// const myConfetti = confetti.create(myCanvas, {
-	// 	resize: true,
-	// 	useWorker: true
-	// });
-
-	// function randomInRange(min, max) {
-	// 	return Math.random() * (max - min) + min;
-	// }
-
 	const fireConfettiBoyzzzz = () => {
-		confetti({
-			particleCount: 100,
-			spread: 70,
-			origin: { y: 0.6 }
-		});
+		if ($ConfigStore.funMode) {
+			confetti({
+				particleCount: 100,
+				spread: 70,
+				origin: { y: 0.6 }
+			});
+		}
 	};
 
 	const drawCard = async (
@@ -250,7 +244,9 @@
 	};
 
 	const nextPlayer = () => {
-		confetti.reset();
+		if ($ConfigStore.funMode) {
+			confetti.reset();
+		}
 
 		// move to next player
 		GameStore.update((currentGame) => {
