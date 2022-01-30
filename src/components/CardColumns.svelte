@@ -82,6 +82,7 @@
 						(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
 					);
 					matchingCard.show = false;
+					matchingCard.revealed = true;
 				});
 
 				return copyPlayers;
@@ -89,6 +90,8 @@
 
 			leftColumnIdx++;
 		}
+
+		// playersWithCard.map((player) => player.cards);
 
 		GameStore.update((currentGame) => {
 			let copyGame = { ...currentGame };
@@ -101,7 +104,7 @@
 		}
 
 		if (round5Mode === 'left') {
-			dispatch('reveal-card', { leftColumnIdx, round5Mode, playersWithCard });
+			dispatch('reveal-card', { rightColumnIdx: leftColumnIdx, round5Mode, playersWithCard });
 		}
 
 		// TODO: add logic checking with players hand

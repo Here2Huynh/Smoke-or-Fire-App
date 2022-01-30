@@ -338,7 +338,7 @@
 		winnerMsg = { round5Mode: e.detail.round5Mode, rightColumnIdx: e.detail.rightColumnIdx };
 		playersWithCard = e.detail.playersWithCard;
 
-		console.log('playersWithCard', playersWithCard);
+		console.log('playersWithCard - prompt', playersWithCard);
 
 		if (playersWithCard.length) {
 			fireConfettiBoyzzzz();
@@ -362,15 +362,15 @@
     dark:border-gray-700 z-10 flex flex-col"
 >
 	<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
-		<!-- TODO: add round 5 prompt checking here -->
-
 		{#if proceedToRound5}
 			{#each playersWithCard as player}
-				<h1>
-					<span class="font-bold text-amber-400">{player.name}</span>
-					{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
-					{winnerMsg.rightColumnIdx}
-				</h1>
+				{#if player.cards.find((card) => !card.show && card.revealed)}
+					<h1>
+						<span class="font-bold text-amber-400">{player.name}</span>
+						{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
+						{winnerMsg.rightColumnIdx}
+					</h1>
+				{/if}
 			{/each}
 		{:else}
 			<h1>

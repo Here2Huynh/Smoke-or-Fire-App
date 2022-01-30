@@ -64,10 +64,14 @@
 		</div>
 
 		<p class="text-left font-bold">Rounds 5-12</p>
-		<p class="indent-4">
+		<p>
 			There will be 2 columns of 4 cards each. Right side is giving column. Left side is taking
 			column. Going down the right column first, if the number matches a card in a player's hand
 			(cards acquired from above rounds), ...
+		</p>
+		<p class="indent-4">
+			***If the card has already been revealed, the subsequent cards punishment / award doesn't
+			apply and counts as a pass.
 		</p>
 		<ul class="list-inside list-none whitespace-normal">
 			<li class="p-2">
