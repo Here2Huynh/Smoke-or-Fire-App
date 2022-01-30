@@ -278,7 +278,6 @@
 		// reveal card
 		drawnCard = await drawCard(($DeckStore as INewDeck).deck_id);
 		drawnCard.cards[0].show = true;
-		console.log('drawnCard', drawnCard);
 		revealed = true;
 
 		// add card to player hand
@@ -344,6 +343,16 @@
 		if (playersWithCard.length) {
 			fireConfettiBoyzzzz();
 		}
+
+		GameStore.update((currentGame) => {
+			let copyGame = { ...currentGame };
+
+			copyGame.playersWithCard = playersWithCard;
+
+			return copyGame;
+		});
+
+		// TODO: write in logic to account for same card that has been already revealed previously in the column
 	};
 </script>
 

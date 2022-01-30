@@ -47,6 +47,7 @@
 						(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
 					);
 					matchingCard.show = false;
+					matchingCard.revealed = true;
 				});
 
 				return copyPlayers;
