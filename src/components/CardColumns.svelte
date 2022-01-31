@@ -31,6 +31,7 @@
 			);
 			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
 
+			// TODO: fix bug for player hands having multi same cards
 			playersWithCard = $PlayerStore.filter((player) =>
 				player.cards.some(
 					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value

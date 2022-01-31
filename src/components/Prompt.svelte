@@ -364,12 +364,25 @@
 	<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
 		{#if proceedToRound5}
 			{#each playersWithCard as player}
-				{#if player.cards.find((card) => !card.show && card.revealed)}
+				{#if player.cards.find((card) => !card.show)}
 					<h1>
 						<span class="font-bold text-amber-400">{player.name}</span>
 						{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
 						{winnerMsg.rightColumnIdx}
 					</h1>
+				{:else if player.cards.find((card) => card.revealed)}
+					<h1>
+						<span class="font-bold text-amber-400">{player.name}'s</span>
+						{`card flipped down already`}
+						<!-- {winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
+						{winnerMsg.rightColumnIdx} -->
+						<!-- TODO: check back on labelling of this logic -->
+					</h1>
+					<!-- <h1>
+						<span class="font-bold text-amber-400">{player.name}</span>
+						{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
+						{winnerMsg.rightColumnIdx}
+					</h1> -->
 				{/if}
 			{/each}
 		{:else}
