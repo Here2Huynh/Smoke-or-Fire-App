@@ -23,19 +23,42 @@
 			round5Mode = 'left';
 		}
 
-		if (!allRightColumnShown && round5Mode === 'right') {
+		console.log('$RoundStore', $RoundStore);
+
+		if (
+			!allRightColumnShown &&
+			round5Mode === 'right' &&
+			!$RoundStore[$GameStore.round].revealedCards.includes(
+				$RoundStore[$GameStore.round].right[rightColumnIdx].value
+			)
+		) {
 			console.log(
 				rightColumnIdx,
 				$RoundStore[$GameStore.round].right,
 				$RoundStore[$GameStore.round].right[rightColumnIdx].value
 			);
 			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
+			RoundStore.update((currentRound) => {
+				let copyRound = { ...currentRound };
+				copyRound[$GameStore.round].revealedCards = [
+					...copyRound[$GameStore.round].revealedCards,
+					$RoundStore[$GameStore.round].right[rightColumnIdx].value
+				];
+
+				return copyRound;
+			});
+
+			// $RoundStore[$GameStore.round].right[rightColumnIdx].revealed = true;
 
 			// TODO: fix bug for player hands having multi same cards
-			playersWithCard = $PlayerStore.filter((player) =>
-				player.cards.some(
-					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
-				)
+			playersWithCard = $PlayerStore.filter(
+				(player) =>
+					player.cards.some(
+						(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
+					)
+				// player.cards.filter(
+				// 	(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
+				// ).length >= 1
 			);
 			console.log('playersWithCard', playersWithCard);
 			PlayerStore.update((currentPlayers) => {
@@ -44,11 +67,18 @@
 				playersWithCard.forEach((player) => {
 					const matchingPlayer = copyPlayers.find((p) => p.name === player.name);
 					console.log('matchingPlayer', matchingPlayer);
-					const matchingCard = matchingPlayer.cards.find(
+					const matchingCards = matchingPlayer.cards.filter(
 						(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
 					);
-					matchingCard.show = false;
-					matchingCard.revealed = true;
+
+					matchingCards.map((matchingCard) => {
+						matchingCard.show = false;
+						matchingCard.revealed = true;
+
+						return matchingCard;
+					});
+
+					matchingPlayer.cardsFlipped = matchingCards.length;
 				});
 
 				return copyPlayers;
@@ -59,18 +89,29 @@
 			rightColumnIdx++;
 		}
 
-		if (!allLeftColumnShown && round5Mode === 'left') {
+		if (
+			!allLeftColumnShown &&
+			round5Mode === 'left' &&
+			!$RoundStore[$GameStore.round].revealedCards.includes(
+				$RoundStore[$GameStore.round].left[leftColumnIdx].value
+			)
+		) {
 			console.log(
 				leftColumnIdx,
 				$RoundStore[$GameStore.round].left,
 				$RoundStore[$GameStore.round].left[leftColumnIdx].value
 			);
 			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
+			// $RoundStore[$GameStore.round].left[leftColumnIdx].revealed = true;
 
-			playersWithCard = $PlayerStore.filter((player) =>
-				player.cards.some(
-					(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
-				)
+			playersWithCard = $PlayerStore.filter(
+				(player) =>
+					player.cards.some(
+						(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
+					)
+				// player.cards.filter(
+				// 	(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
+				// ).length >= 1
 			);
 			console.log('playersWithCard2', playersWithCard);
 			PlayerStore.update((currentPlayers) => {
@@ -79,11 +120,18 @@
 				playersWithCard.forEach((player) => {
 					const matchingPlayer = copyPlayers.find((p) => p.name === player.name);
 					console.log('matchingPlayer', matchingPlayer);
-					const matchingCard = matchingPlayer.cards.find(
+					const matchingCards = matchingPlayer.cards.filter(
 						(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
 					);
-					matchingCard.show = false;
-					matchingCard.revealed = true;
+
+					matchingCards.map((matchingCard) => {
+						matchingCard.show = false;
+						matchingCard.revealed = true;
+
+						return matchingCard;
+					});
+
+					matchingPlayer.cardsFlipped = matchingCards.length;
 				});
 
 				return copyPlayers;
@@ -91,8 +139,6 @@
 
 			leftColumnIdx++;
 		}
-
-		// playersWithCard.map((player) => player.cards);
 
 		GameStore.update((currentGame) => {
 			let copyGame = { ...currentGame };

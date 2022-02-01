@@ -23,6 +23,7 @@
 	let showColumns = false;
 	let proceedToRound5 = false;
 	let playersWithCard = [];
+	// let playerToShow = [];
 
 	const myCanvas = document.createElement('canvas');
 	document.body.appendChild(myCanvas);
@@ -244,7 +245,7 @@
 	};
 
 	const nextPlayer = () => {
-		if ($ConfigStore.funMode) {
+		if ($ConfigStore.funMode && confetti) {
 			confetti.reset();
 		}
 
@@ -333,12 +334,12 @@
 	};
 
 	const handleCardReveal = (e) => {
-		// TODO: change the player name highlight
 		console.log('e.detail', e.detail);
 		winnerMsg = { round5Mode: e.detail.round5Mode, rightColumnIdx: e.detail.rightColumnIdx };
 		playersWithCard = e.detail.playersWithCard;
 
 		console.log('playersWithCard - prompt', playersWithCard);
+		// console.log('playerToShow', playerToShow);
 
 		if (playersWithCard.length) {
 			fireConfettiBoyzzzz();
@@ -368,7 +369,12 @@
 					<h1>
 						<span class="font-bold text-amber-400">{player.name}</span>
 						{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
-						{winnerMsg.rightColumnIdx}
+
+						{#if player.cardsFlipped > 1}
+							{winnerMsg.rightColumnIdx * player.cardsFlipped}
+						{:else}
+							{winnerMsg.rightColumnIdx}
+						{/if}
 					</h1>
 				{:else if player.cards.find((card) => card.revealed)}
 					<h1>
@@ -376,7 +382,8 @@
 						{`card flipped down already`}
 						<!-- {winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
 						{winnerMsg.rightColumnIdx} -->
-						<!-- TODO: check back on labelling of this logic -->
+						<!-- TODO: check back on labelling of this -->
+						<!-- TODO: adjustment font size when over 3 players -->
 					</h1>
 					<!-- <h1>
 						<span class="font-bold text-amber-400">{player.name}</span>
