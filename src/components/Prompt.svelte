@@ -23,7 +23,7 @@
 	let showColumns = false;
 	let proceedToRound5 = false;
 	let playersWithCard = [];
-	// let playerToShow = [];
+	let duplicate = false;
 
 	const myCanvas = document.createElement('canvas');
 	document.body.appendChild(myCanvas);
@@ -355,6 +355,10 @@
 
 		// TODO: write in logic to account for same card that has been already revealed previously in the column
 	};
+
+	const handleCardDupe = () => {
+		duplicate = true;
+	};
 </script>
 
 <div
@@ -364,8 +368,17 @@
 >
 	<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
 		{#if proceedToRound5}
-			{#each playersWithCard as player}
-				{#if player.cards.find((card) => !card.show)}
+			{#if duplicate}
+				<h1>
+					<span class="font-bold text-amber-400">{player.name}'s</span>
+					{`card flipped down already`}
+
+					<!-- TODO: check back on labelling of this -->
+					<!-- TODO: adjustment font size when over 3 players -->
+				</h1>
+			{:else}
+				{#each playersWithCard as player}
+					<!-- {if player.cards.find((card) => !card.show)} -->
 					<h1>
 						<span class="font-bold text-amber-400">{player.name}</span>
 						{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
@@ -376,22 +389,9 @@
 							{winnerMsg.rightColumnIdx}
 						{/if}
 					</h1>
-				{:else if player.cards.find((card) => card.revealed)}
-					<h1>
-						<span class="font-bold text-amber-400">{player.name}'s</span>
-						{`card flipped down already`}
-						<!-- {winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
-						{winnerMsg.rightColumnIdx} -->
-						<!-- TODO: check back on labelling of this -->
-						<!-- TODO: adjustment font size when over 3 players -->
-					</h1>
-					<!-- <h1>
-						<span class="font-bold text-amber-400">{player.name}</span>
-						{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
-						{winnerMsg.rightColumnIdx}
-					</h1> -->
-				{/if}
-			{/each}
+					<!-- {/if} -->
+				{/each}
+			{/if}
 		{:else}
 			<h1>
 				It's <span class="font-bold text-amber-400">{$GameStore.currentPlayer.name}</span> turn.
@@ -444,6 +444,10 @@
 			{/if}
 		{/if}
 	{:else if $RoundStore[$GameStore.round].left.length && $RoundStore[$GameStore.round].right.length}
-		<CardColumns on:reveal-card={handleCardReveal} />
+		<CardColumns
+			{duplicate}
+			on:reveal-card={handleCardReveal}
+			on:card-duplicate={() => (duplicate = true)}
+		/>
 	{/if}
 </div>

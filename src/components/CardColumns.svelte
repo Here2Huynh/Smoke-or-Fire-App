@@ -6,6 +6,8 @@
 
 	import Button from '$lib/Button.svelte';
 
+	export let duplicate;
+
 	let rightColumnIdx = 0;
 	let leftColumnIdx = 0;
 	let round5Mode = 'right';
@@ -13,6 +15,8 @@
 	const dispatch = createEventDispatcher();
 
 	const showCard = () => {
+		duplicate = false;
+
 		const allRightColumnShown = $RoundStore[$GameStore.round].right.every((card) => card.show);
 		const allLeftColumnShown = $RoundStore[$GameStore.round].left.every((card) => card.show);
 		let playersWithCard;
@@ -146,12 +150,31 @@
 			return currentGame;
 		});
 
+		if (
+			(($RoundStore[$GameStore.round].right[rightColumnIdx] &&
+				$RoundStore[$GameStore.round].revealedCards.includes(
+					$RoundStore[$GameStore.round].right[rightColumnIdx].value
+				)) ||
+				($RoundStore[$GameStore.round].left[leftColumnIdx] &&
+					$RoundStore[$GameStore.round].revealedCards.includes(
+						$RoundStore[$GameStore.round].left[leftColumnIdx].value
+					))) &&
+			!playersWithCard
+		) {
+			console.log('card has already been revealed on the columns');
+			return dispatch('card-duplicate');
+		}
+
 		if (round5Mode === 'right') {
-			dispatch('reveal-card', { rightColumnIdx, round5Mode, playersWithCard });
+			return dispatch('reveal-card', { rightColumnIdx, round5Mode, playersWithCard });
 		}
 
 		if (round5Mode === 'left') {
-			dispatch('reveal-card', { rightColumnIdx: leftColumnIdx, round5Mode, playersWithCard });
+			return dispatch('reveal-card', {
+				rightColumnIdx: leftColumnIdx,
+				round5Mode,
+				playersWithCard
+			});
 		}
 
 		// TODO: add logic checking with players hand
