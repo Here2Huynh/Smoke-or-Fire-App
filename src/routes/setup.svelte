@@ -41,7 +41,7 @@
 
 		GameStore.update((currentGame) => {
 			let copyGame = { ...currentGame };
-			copyGame.started = true;
+			// copyGame.started = true;
 			copyGame.currentPlayer = $PlayerStore[0];
 			copyGame.round = 1;
 

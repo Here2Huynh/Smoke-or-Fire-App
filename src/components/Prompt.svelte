@@ -14,7 +14,7 @@
 
 	import Button from '$lib/Button.svelte';
 	import CardColumns from './CardColumns.svelte';
-	// import { onMount } from 'svelte';
+	import { onMount } from 'svelte';
 
 	let revealed = false;
 	let drawnCard: ICardDrew;
@@ -28,6 +28,15 @@
 
 	const myCanvas = document.createElement('canvas');
 	document.body.appendChild(myCanvas);
+
+	onMount(() => {
+		GameStore.update((currentGame) => {
+			let copyGame = { ...currentGame };
+			copyGame.started = true;
+
+			return copyGame;
+		});
+	});
 
 	const fireConfettiBoyzzzz = () => {
 		if ($ConfigStore.funMode) {
