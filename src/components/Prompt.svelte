@@ -14,6 +14,7 @@
 
 	import Button from '$lib/Button.svelte';
 	import CardColumns from './CardColumns.svelte';
+	// import { onMount } from 'svelte';
 
 	let revealed = false;
 	let drawnCard: ICardDrew;
@@ -334,7 +335,6 @@
 	};
 
 	const handleCardReveal = (e) => {
-		console.log('e.detail', e.detail);
 		winnerMsg = { round5Mode: e.detail.round5Mode, rightColumnIdx: e.detail.rightColumnIdx };
 		playersWithCard = e.detail.playersWithCard;
 
@@ -355,10 +355,6 @@
 
 		// TODO: write in logic to account for same card that has been already revealed previously in the column
 	};
-
-	const handleCardDupe = () => {
-		duplicate = true;
-	};
 </script>
 
 <div
@@ -370,8 +366,8 @@
 		{#if proceedToRound5}
 			{#if duplicate}
 				<h1>
-					<span class="font-bold text-amber-400">{player.name}'s</span>
-					{`card flipped down already`}
+					<!-- <span class="font-bold text-amber-400">{player.name}'s</span> -->
+					{`card(s) already flipped down`}
 
 					<!-- TODO: check back on labelling of this -->
 					<!-- TODO: adjustment font size when over 3 players -->
@@ -448,6 +444,7 @@
 			{duplicate}
 			on:reveal-card={handleCardReveal}
 			on:card-duplicate={() => (duplicate = true)}
+			on:reset-dupe={(e) => (duplicate = e.detail)}
 		/>
 	{/if}
 </div>

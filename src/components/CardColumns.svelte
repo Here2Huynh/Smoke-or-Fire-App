@@ -16,18 +16,19 @@
 
 	const showCard = () => {
 		duplicate = false;
+		dispatch('reset-dupe', duplicate);
 
 		const allRightColumnShown = $RoundStore[$GameStore.round].right.every((card) => card.show);
 		const allLeftColumnShown = $RoundStore[$GameStore.round].left.every((card) => card.show);
-		let playersWithCard;
+		let playersWithCard = [];
 
-		console.log(rightColumnIdx, allRightColumnShown);
+		console.log(rightColumnIdx, allRightColumnShown, round5Mode, playersWithCard);
+		console.log('$RoundStore', $RoundStore);
+		console.log('$GameStore', $GameStore);
 
 		if (rightColumnIdx === 4 && allRightColumnShown) {
 			round5Mode = 'left';
 		}
-
-		console.log('$RoundStore', $RoundStore);
 
 		if (
 			!allRightColumnShown &&
@@ -42,15 +43,6 @@
 				$RoundStore[$GameStore.round].right[rightColumnIdx].value
 			);
 			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
-			RoundStore.update((currentRound) => {
-				let copyRound = { ...currentRound };
-				copyRound[$GameStore.round].revealedCards = [
-					...copyRound[$GameStore.round].revealedCards,
-					$RoundStore[$GameStore.round].right[rightColumnIdx].value
-				];
-
-				return copyRound;
-			});
 
 			// $RoundStore[$GameStore.round].right[rightColumnIdx].revealed = true;
 
@@ -89,8 +81,6 @@
 			});
 
 			// TODO: change the prompt label to tell players who as the cards
-
-			rightColumnIdx++;
 		}
 
 		if (
@@ -117,6 +107,7 @@
 				// 	(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
 				// ).length >= 1
 			);
+
 			console.log('playersWithCard2', playersWithCard);
 			PlayerStore.update((currentPlayers) => {
 				const copyPlayers = [...currentPlayers];
@@ -140,36 +131,106 @@
 
 				return copyPlayers;
 			});
-
-			leftColumnIdx++;
 		}
 
 		GameStore.update((currentGame) => {
 			let copyGame = { ...currentGame };
-			currentGame.playersWithCard = playersWithCard;
-			return currentGame;
+			copyGame.playersWithCard = playersWithCard;
+
+			return copyGame;
 		});
 
+		console.log(
+			'$RoundStore[$GameStore.round].revealedCards',
+			$RoundStore[$GameStore.round].revealedCards
+		);
+
+		console.log(
+			'$RoundStore[$GameStore.round].right[rightColumnIdx]',
+			$RoundStore[$GameStore.round].right[rightColumnIdx]
+		);
+
+		// TODO: fix bug, where if there is a dupe on left column and we still on the right side then its reveals it
+
 		if (
-			(($RoundStore[$GameStore.round].right[rightColumnIdx] &&
-				$RoundStore[$GameStore.round].revealedCards.includes(
-					$RoundStore[$GameStore.round].right[rightColumnIdx].value
-				)) ||
-				($RoundStore[$GameStore.round].left[leftColumnIdx] &&
-					$RoundStore[$GameStore.round].revealedCards.includes(
-						$RoundStore[$GameStore.round].left[leftColumnIdx].value
-					))) &&
-			!playersWithCard
+			$RoundStore[$GameStore.round].right[rightColumnIdx] &&
+			$RoundStore[$GameStore.round].revealedCards.includes(
+				$RoundStore[$GameStore.round].right[rightColumnIdx].value
+			) &&
+			playersWithCard.length == 0
 		) {
-			console.log('card has already been revealed on the columns');
+			console.log(
+				'$RoundStore[$GameStore.round].right[rightColumnIdx].value',
+				$RoundStore[$GameStore.round].right[rightColumnIdx].value
+			);
+			console.log(`card has already been revealed on the ${round5Mode} column`);
+			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
+			RoundStore.update((currentRound) => {
+				let copyRound = { ...currentRound };
+				copyRound[$GameStore.round].revealedCards = [
+					...copyRound[$GameStore.round].revealedCards,
+					$RoundStore[$GameStore.round].right[rightColumnIdx].value
+				];
+
+				return copyRound;
+			});
+
+			rightColumnIdx++;
+			return dispatch('card-duplicate');
+		}
+
+		if (
+			$RoundStore[$GameStore.round].left[leftColumnIdx] &&
+			$RoundStore[$GameStore.round].revealedCards.includes(
+				$RoundStore[$GameStore.round].left[leftColumnIdx].value
+			) &&
+			playersWithCard.length == 0
+		) {
+			console.log(
+				'$RoundStore[$GameStore.round].left[leftColumnIdx].value',
+				$RoundStore[$GameStore.round].left[leftColumnIdx].value
+			);
+			console.log(`card has already been revealed on the ${round5Mode} column`);
+			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
+			RoundStore.update((currentRound) => {
+				let copyRound = { ...currentRound };
+				copyRound[$GameStore.round].revealedCards = [
+					...copyRound[$GameStore.round].revealedCards,
+					$RoundStore[$GameStore.round].left[leftColumnIdx].value
+				];
+
+				return copyRound;
+			});
+
+			leftColumnIdx++;
 			return dispatch('card-duplicate');
 		}
 
 		if (round5Mode === 'right') {
+			RoundStore.update((currentRound) => {
+				let copyRound = { ...currentRound };
+				copyRound[$GameStore.round].revealedCards = [
+					...copyRound[$GameStore.round].revealedCards,
+					$RoundStore[$GameStore.round].right[rightColumnIdx].value
+				];
+
+				return copyRound;
+			});
+			rightColumnIdx++;
 			return dispatch('reveal-card', { rightColumnIdx, round5Mode, playersWithCard });
 		}
 
 		if (round5Mode === 'left') {
+			RoundStore.update((currentRound) => {
+				let copyRound = { ...currentRound };
+				copyRound[$GameStore.round].revealedCards = [
+					...copyRound[$GameStore.round].revealedCards,
+					$RoundStore[$GameStore.round].left[leftColumnIdx].value
+				];
+
+				return copyRound;
+			});
+			leftColumnIdx++;
 			return dispatch('reveal-card', {
 				rightColumnIdx: leftColumnIdx,
 				round5Mode,
