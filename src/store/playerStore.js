@@ -1,5 +1,14 @@
 import { writable } from 'svelte/store';
 
-const Players = writable([]);
+let players = [];
+for (let i = 0; i < 3; i++) {
+	players.push({
+		name: `player${i + 1}`,
+		cards: [],
+		idx: i
+	});
+}
+
+const Players = writable(players);
 
 export default Players;

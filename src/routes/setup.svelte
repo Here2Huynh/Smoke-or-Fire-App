@@ -1,6 +1,7 @@
 <script>
+	// @ts-nocheck
+
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
 
 	import PlayerStore from '../store/playerStore';
 	import GameStore from '../store/gameStore';
@@ -8,40 +9,39 @@
 
 	let playerCount;
 	const playerNumberOptions = [...Array(11).keys()].slice(3, 11);
-	let players = [];
 
-	const addPlayers = (numberToAdd) => {
-		players = [];
-		for (let i = 0; i < numberToAdd; i++) {
-			players.push({
-				name: `player${i + 1}`,
-				cards: [],
-				idx: i
-			});
-		}
-	};
-
-	// TODO: add typescript types to this component
-
-	// TODO: add input validation, to reduce api errors
-
-	const updatePlayers = () => {
-		if (playerCount != players.length) addPlayers(playerCount);
-	};
-
-	const newGameSetup = () => {
-		addPlayers(playerCount);
+	const addPlayers = (playerCount) => {
 		PlayerStore.update((currentPlayers) => {
 			let copyPlayers = [...currentPlayers];
 
-			copyPlayers = [...players];
+			if (playerCount > $PlayerStore.length) {
+				for (let i = 0; i < playerCount - $PlayerStore.length; i++) {
+					copyPlayers.push({
+						name: `player${i + $PlayerStore.length + 1}`,
+						cards: [],
+						idx: i
+					});
+				}
+			}
+
+			if (playerCount < $PlayerStore.length) {
+				copyPlayers.splice(playerCount, $PlayerStore.length - playerCount);
+			}
 
 			return copyPlayers;
 		});
+	};
 
+	// TODO: add input validation, to reduce api errors
+	// TODO: add player name customability
+
+	const updatePlayers = () => {
+		if (playerCount != $PlayerStore.length) addPlayers(playerCount);
+	};
+
+	const newGameSetup = () => {
 		GameStore.update((currentGame) => {
 			let copyGame = { ...currentGame };
-			// copyGame.started = true;
 			copyGame.currentPlayer = $PlayerStore[0];
 			copyGame.round = 1;
 
@@ -50,10 +50,6 @@
 
 		goto('/');
 	};
-
-	onMount(() => {
-		if (playerCount) addPlayers(playerCount);
-	});
 </script>
 
 <div class="flex justify-center mt-12">
@@ -74,10 +70,11 @@
 		</select>
 
 		<label for="player-names" class="text-gray-900 dark:text-white mt-4">Player Names: </label>
-		{#each players as player, idx (idx)}
+		{#each $PlayerStore as player, idx (idx)}
 			<input
 				placeholder={player.name}
 				bind:value={player.name}
+				on:focus={() => (player.focus = true)}
 				class="m-1 border-2 border-gray-300"
 			/>
 		{/each}
@@ -86,7 +83,6 @@
 			<Button label="Start New Game" on:click={newGameSetup} />
 		</div>
 
-		<!-- TODO: add history tracking so it shows on the next time user goes back -->
 		{#if $GameStore.started}
 			<div class="mt-4">
 				<Button option="game" label="Continue Game" on:click={() => goto('/')} />
