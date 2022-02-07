@@ -1,4 +1,6 @@
 <script>
+	// @ts-nocheck
+
 	import { createEventDispatcher } from 'svelte';
 	import GameStore from '../store/gameStore';
 	import RoundStore from '../store/roundStore';
@@ -11,6 +13,7 @@
 	let rightColumnIdx = 0;
 	let leftColumnIdx = 0;
 	let round5Mode = 'right';
+	let labelPresent = true;
 
 	const dispatch = createEventDispatcher();
 
@@ -44,9 +47,6 @@
 			);
 			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
 
-			// $RoundStore[$GameStore.round].right[rightColumnIdx].revealed = true;
-
-			// TODO: fix bug for player hands having multi same cards
 			playersWithCard = $PlayerStore.filter(
 				(player) =>
 					player.cards.some(
@@ -79,8 +79,6 @@
 
 				return copyPlayers;
 			});
-
-			// TODO: change the prompt label to tell players who as the cards
 		}
 
 		if (
@@ -98,14 +96,10 @@
 			$RoundStore[$GameStore.round].left[leftColumnIdx].show = true;
 			// $RoundStore[$GameStore.round].left[leftColumnIdx].revealed = true;
 
-			playersWithCard = $PlayerStore.filter(
-				(player) =>
-					player.cards.some(
-						(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
-					)
-				// player.cards.filter(
-				// 	(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
-				// ).length >= 1
+			playersWithCard = $PlayerStore.filter((player) =>
+				player.cards.some(
+					(card) => card.value === $RoundStore[$GameStore.round].left[leftColumnIdx].value
+				)
 			);
 
 			console.log('playersWithCard2', playersWithCard);
@@ -149,8 +143,6 @@
 			'$RoundStore[$GameStore.round].right[rightColumnIdx]',
 			$RoundStore[$GameStore.round].right[rightColumnIdx]
 		);
-
-		// TODO: fix bug, where if there is a dupe on left column and we still on the right side then its reveals it
 
 		if (
 			$RoundStore[$GameStore.round].right[rightColumnIdx] &&
@@ -237,9 +229,9 @@
 				playersWithCard
 			});
 		}
-
-		// TODO: add logic checking with players hand
 	};
+
+	// TODO: adjustment card column position so it doesn't move when player labels are added
 </script>
 
 <div class="grid grid-cols-2">

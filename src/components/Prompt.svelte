@@ -371,7 +371,7 @@
     border-gray-200 shadow-md dark:bg-gray-800
     dark:border-gray-700 z-10 flex flex-col"
 >
-	<div class="p-4 text-center text-2xl text-gray-900 dark:text-white">
+	<div class="p-4 h-24 text-center text-2xl text-gray-900 dark:text-white">
 		{#if proceedToRound5}
 			{#if duplicate}
 				<h1>
@@ -383,7 +383,6 @@
 				</h1>
 			{:else}
 				{#each playersWithCard as player}
-					<!-- {if player.cards.find((card) => !card.show)} -->
 					<h1>
 						<span class="font-bold text-amber-400">{player.name}</span>
 						{winnerMsg.round5Mode === 'right' ? 'give' : 'take'}
@@ -394,7 +393,6 @@
 							{winnerMsg.rightColumnIdx}
 						{/if}
 					</h1>
-					<!-- {/if} -->
 				{/each}
 			{/if}
 		{:else}
