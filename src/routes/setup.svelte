@@ -1,6 +1,5 @@
 <script>
 	// @ts-nocheck
-
 	import { goto } from '$app/navigation';
 
 	import PlayerStore from '../store/playerStore';
@@ -31,9 +30,6 @@
 			return copyPlayers;
 		});
 	};
-
-	// TODO: add input validation, to reduce api errors
-	// TODO: add player name customability
 
 	const updatePlayers = () => {
 		if (playerCount != $PlayerStore.length) addPlayers(playerCount);
@@ -74,9 +70,11 @@
 			<input
 				placeholder={player.name}
 				bind:value={player.name}
-				on:focus={() => (player.focus = true)}
 				class="m-1 border-2 border-gray-300"
 			/>
+			{#if /\s/.test(player.name)}
+				<p class="text-rose-400">Name can't contain spaces</p>
+			{/if}
 		{/each}
 
 		<div class="mt-4">
