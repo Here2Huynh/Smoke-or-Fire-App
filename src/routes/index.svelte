@@ -24,6 +24,7 @@
 
 	import DeckStore from '../store/deckStore';
 	import PlayerStore from '../store/playerStore';
+	import GameStore from '../store/gameStore';
 
 	import GameUI from '../components/GameUI.svelte';
 
@@ -41,6 +42,7 @@
 	// TODO: add players' play history, player can view by clicking on their box
 
 	onMount(async () => {
+		console.log('$PlayerStore', $PlayerStore);
 		DeckStore.update((currentDeck) => {
 			let copyDeck = currentDeck;
 
@@ -61,7 +63,7 @@
 	};
 </script>
 
-{#if $PlayerStore.length && deck}
+{#if $GameStore.started && $PlayerStore.length && deck}
 	<GameUI />
 {:else}
 	<div class="flex justify-center mt-60">
