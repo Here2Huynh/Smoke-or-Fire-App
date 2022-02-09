@@ -29,7 +29,7 @@
 		console.log('$RoundStore', $RoundStore);
 		console.log('$GameStore', $GameStore);
 
-		if (rightColumnIdx === 4 && allRightColumnShown) {
+		if (rightColumnIdx === 4) {
 			round5Mode = 'left';
 		}
 
@@ -47,14 +47,10 @@
 			);
 			$RoundStore[$GameStore.round].right[rightColumnIdx].show = true;
 
-			playersWithCard = $PlayerStore.filter(
-				(player) =>
-					player.cards.some(
-						(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
-					)
-				// player.cards.filter(
-				// 	(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
-				// ).length >= 1
+			playersWithCard = $PlayerStore.filter((player) =>
+				player.cards.some(
+					(card) => card.value === $RoundStore[$GameStore.round].right[rightColumnIdx].value
+				)
 			);
 			console.log('playersWithCard', playersWithCard);
 			PlayerStore.update((currentPlayers) => {
@@ -149,7 +145,9 @@
 			$RoundStore[$GameStore.round].revealedCards.includes(
 				$RoundStore[$GameStore.round].right[rightColumnIdx].value
 			) &&
-			playersWithCard.length == 0
+			playersWithCard.length == 0 &&
+			!$RoundStore[$GameStore.round].right.some((card) => !card.show) &&
+			!$RoundStore[$GameStore.round].left.some((card) => !card.show)
 		) {
 			console.log(
 				'$RoundStore[$GameStore.round].right[rightColumnIdx].value',
@@ -176,7 +174,9 @@
 			$RoundStore[$GameStore.round].revealedCards.includes(
 				$RoundStore[$GameStore.round].left[leftColumnIdx].value
 			) &&
-			playersWithCard.length == 0
+			playersWithCard.length == 0 &&
+			!$RoundStore[$GameStore.round].left.some((card) => !card.show) &&
+			!$RoundStore[$GameStore.round].right.some((card) => !card.show)
 		) {
 			console.log(
 				'$RoundStore[$GameStore.round].left[leftColumnIdx].value',
