@@ -37,7 +37,7 @@
 	export let deck: INewDeck;
 	const { deck_id } = deck;
 
-	const cardImgUrl = 'https://deckofcardsapi.com/static/img/5C.svg';
+	// const cardImgUrl = 'https://deckofcardsapi.com/static/img/5C.svg';
 
 	// TODO: add players' play history, player can view by clicking on their box
 

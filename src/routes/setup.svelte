@@ -40,6 +40,7 @@
 			let copyGame = { ...currentGame };
 			copyGame.currentPlayer = $PlayerStore[0];
 			copyGame.round = 1;
+			copyGame.started = true;
 
 			return copyGame;
 		});
@@ -81,7 +82,7 @@
 			<Button label="Start New Game" on:click={newGameSetup} />
 		</div>
 
-		{#if $GameStore.started}
+		{#if $GameStore.inGame}
 			<div class="mt-4">
 				<Button option="game" label="Continue Game" on:click={() => goto('/')} />
 			</div>

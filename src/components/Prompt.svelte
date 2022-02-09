@@ -32,7 +32,7 @@
 	onMount(() => {
 		GameStore.update((currentGame) => {
 			let copyGame = { ...currentGame };
-			copyGame.started = true;
+			copyGame.inGame = true;
 
 			return copyGame;
 		});
