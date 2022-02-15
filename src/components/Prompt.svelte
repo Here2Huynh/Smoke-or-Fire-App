@@ -343,6 +343,19 @@
 		if (round5start && lastPlayerCheck) proceedToRound5 = true;
 	};
 
+	const checkForPyramidRound = () => {
+		const allRightColumnShown = $RoundStore[$GameStore.round].right.every((card) => card.show);
+		const allLeftColumnShown = $RoundStore[$GameStore.round].left.every((card) => card.show);
+
+		if (allRightColumnShown && allLeftColumnShown) {
+			console.log(`end of round 5, setting pyramid round`);
+		}
+
+		// calculate the participants
+		// setup the pyramid
+		// TODO: add the api sync so we can draw from an accurate deck
+	};
+
 	const handleCardReveal = (e) => {
 		winnerMsg = { round5Mode: e.detail.round5Mode, rightColumnIdx: e.detail.rightColumnIdx };
 		playersWithCard = e.detail.playersWithCard;
@@ -361,6 +374,8 @@
 
 			return copyGame;
 		});
+
+		checkForPyramidRound();
 
 		// TODO: write in logic to account for same card that has been already revealed previously in the column
 	};

@@ -230,8 +230,6 @@
 			});
 		}
 	};
-
-	// TODO: adjustment card column position so it doesn't move when player labels are added
 </script>
 
 <div class="grid grid-cols-2">
