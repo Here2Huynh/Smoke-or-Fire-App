@@ -175,8 +175,8 @@
 				$RoundStore[$GameStore.round].left[leftColumnIdx].value
 			) &&
 			playersWithCard.length == 0 &&
-			!$RoundStore[$GameStore.round].left.some((card) => !card.show) &&
-			!$RoundStore[$GameStore.round].right.some((card) => !card.show)
+			(!$RoundStore[$GameStore.round].left.some((card) => !card.show) ||
+				!$RoundStore[$GameStore.round].right.some((card) => !card.show))
 		) {
 			console.log(
 				'$RoundStore[$GameStore.round].left[leftColumnIdx].value',
