@@ -29,6 +29,15 @@
 		console.log('$RoundStore', $RoundStore);
 		console.log('$GameStore', $GameStore);
 
+		if (
+			rightColumnIdx === 4 &&
+			round5Mode === 'left' &&
+			allRightColumnShown &&
+			allLeftColumnShown
+		) {
+			dispatch('check-pyramid');
+		}
+
 		if (rightColumnIdx === 4) {
 			round5Mode = 'left';
 		}
@@ -139,6 +148,8 @@
 			'$RoundStore[$GameStore.round].right[rightColumnIdx]',
 			$RoundStore[$GameStore.round].right[rightColumnIdx]
 		);
+
+		// TODO: fix bug where round check does not happen when last card is already revealed
 
 		if (
 			$RoundStore[$GameStore.round].right[rightColumnIdx] &&

@@ -280,11 +280,10 @@
 	};
 
 	const handleOptionSelection = async (option): Promise<any> => {
-		console.log('$GameStore', $GameStore);
+		// console.log('$GameStore', $GameStore);
 		// console.log('option', option);
 		// console.log('$GameStore.currentPlayer', $GameStore.currentPlayer);
 		// console.log('$GameStore.round', $GameStore.round);
-		console.log('$PlayerStore', $PlayerStore);
 
 		// reveal card
 		drawnCard = await drawCard(($DeckStore as INewDeck).deck_id);
@@ -343,6 +342,7 @@
 		if (round5start && lastPlayerCheck) proceedToRound5 = true;
 	};
 
+	// TODO: adjust clumn height to accomadate for max player having the card (4)
 	const checkForPyramidRound = () => {
 		const allRightColumnShown = $RoundStore[$GameStore.round].right.every((card) => card.show);
 		const allLeftColumnShown = $RoundStore[$GameStore.round].left.every((card) => card.show);
@@ -352,7 +352,14 @@
 		}
 
 		// calculate the participants
+		console.log('$PlayerStore', $PlayerStore);
+		const qualfyingPlayers = $PlayerStore.reduce((max, curr) =>
+			max.cardsFlipped >= curr.cardsFlipped ? max : curr
+		);
+
+		console.log('qualfyingPlayers', qualfyingPlayers);
 		// setup the pyramid
+
 		// TODO: add the api sync so we can draw from an accurate deck
 	};
 
@@ -467,6 +474,7 @@
 			on:reveal-card={handleCardReveal}
 			on:card-duplicate={() => (duplicate = true)}
 			on:reset-dupe={(e) => (duplicate = e.detail)}
+			on:check-pyramid(checkForPyramidRound)
 		/>
 	{/if}
 </div>
